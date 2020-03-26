@@ -1,6 +1,8 @@
 package com.job4j.notesapp.fargment
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,10 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.R
+import com.job4j.notesapp.store.EntryBaseHelper
+import com.job4j.notesapp.store.EntrySchema
 
 /**
  * Класс AddEntryFragment - добавляет текущую запись
@@ -23,9 +28,10 @@ import com.job4j.notesapp.R
 class AddEntryFragment : Fragment() {
     private val log = "AddEntryFragment"
 
+    private lateinit var store : SQLiteDatabase
     private lateinit var imm : InputMethodManager
-    private lateinit var btnPositive : CardView
-    private lateinit var btnNegative : CardView
+    private lateinit var btnPositive : ImageView
+    private lateinit var btnNegative : ImageView
     private lateinit var dateEntry : TextView
     private lateinit var editText : EditText
 
@@ -42,6 +48,8 @@ class AddEntryFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add_entry, container, false)
         Log.d(log, "onCreateView: initialization AddEntryFragment.")
+
+        store = EntryBaseHelper(context!!).writableDatabase
 
         imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
@@ -65,6 +73,13 @@ class AddEntryFragment : Fragment() {
     private fun onClickPositive(v: View) {
         Log.d(log, "onClickPositive: click positive.")
         imm.hideSoftInputFromWindow(editText.windowToken, 0)
+
+        val contentValues = ContentValues()
+        contentValues.put(EntrySchema.EntryTable.Cols.DATE, arguments?.get("date_entry").toString())
+        contentValues.put(EntrySchema.EntryTable.Cols.TEXT, editText.text.toString().trim())
+        store.insert(EntrySchema.EntryTable.NAME, null, contentValues)
+
+        activity?.supportFragmentManager?.popBackStack()
     }
 
     @Suppress("UNUSED_PARAMETER")

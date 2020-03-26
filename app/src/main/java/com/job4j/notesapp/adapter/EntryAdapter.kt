@@ -4,7 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.job4j.notesapp.R
 import com.job4j.notesapp.model.Entry
 
 /**
@@ -26,6 +28,8 @@ class EntryAdapter(private var context: Context, private var resource: Int,
     override fun onBindViewHolder(holder: EntryViewHolder, position: Int) {
         val entry = entrys[position]
 
+        val textEntry = holder.itemView.findViewById<TextView>(R.id.text_entry)
+        textEntry.text = entry.text
     }
 
     override fun getItemCount(): Int {
