@@ -1,6 +1,7 @@
 package com.job4j.notesapp.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,7 @@ import com.job4j.notesapp.model.Entry
 class EntryAdapter(private var context: Context, private var resource: Int,
                    private var entrys: List<Entry>) :
     RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
-    private lateinit var listener : Listener
+    private lateinit var listener : EntryListener
 
     class EntryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -39,31 +40,20 @@ class EntryAdapter(private var context: Context, private var resource: Int,
             textEntry.text = entry.text
             btnDelete.visibility = View.GONE
         } else {
+            textEntry.setTextColor(Color.parseColor("#61000000"))
             textEntry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            textEntry.setTextColor(context.resources.getColor(R.color.colorLight))
             textEntry.text = entry.text
             btnDelete.visibility = View.VISIBLE
         }
-
-        itemView.setOnClickListener {
-            listener.onClick(position)
-        }
-
-        btnDelete.setOnClickListener {
-            listener.onClickDelete(position)
-        }
+        itemView.setOnClickListener { listener.onClick(position) }
+        btnDelete.setOnClickListener { listener.onClickDelete(position) }
     }
 
     override fun getItemCount(): Int {
         return entrys.size
     }
 
-    interface Listener {
-        fun onClick(position: Int)
-        fun onClickDelete(position: Int)
-    }
-
-    fun setListener(listener: Listener) {
+    fun setListener(listener: EntryListener) {
         this.listener = listener
     }
 }

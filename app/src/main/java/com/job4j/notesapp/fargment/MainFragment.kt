@@ -8,12 +8,15 @@ import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.EntryAdapter
+import com.job4j.notesapp.adapter.EntryListener
+import com.job4j.notesapp.adapter.SwipeToTransferCallback
 import com.job4j.notesapp.model.Entry
 import com.job4j.notesapp.store.EntryBaseHelper
 import com.job4j.notesapp.store.EntrySchema
@@ -86,12 +89,35 @@ class MainFragment : Fragment() {
 
         Collections.sort(entrys, Entry())
         adapter = context?.let { EntryAdapter(it, R.layout.view_entry, entrys) }!!
-        adapter.setListener(object : EntryAdapter.Listener {
+        adapter.setListener(object : EntryListener {
             override fun onClick(position: Int) { updateData(position) }
             override fun onClickDelete(position: Int) { deleteData(position) }
         })
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(object : SwipeToTransferCallback(context!!) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                updateItemDate(viewHolder.adapterPosition)
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun updateItemDate(position: Int) {
+        val scrollPosition = recyclerView.layoutManager
+            ?.onSaveInstanceState()
+        val contentValues = ContentValues()
+        contentValues.put(EntrySchema.EntryTable.Cols.DATE, setDateFormat(
+            setStringFormat(entrys[position].date)))
+        store.update(EntrySchema.EntryTable.NAME, contentValues, "_id = ?",
+            arrayOf("${entrys[position].id}"))
+
+        entrys.remove(entrys[position])
+        Collections.sort(entrys, Entry())
+        adapter.notifyItemRemoved(position)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager?.onRestoreInstanceState(scrollPosition)
     }
 
     private fun updateData(position: Int) {
@@ -134,7 +160,6 @@ class MainFragment : Fragment() {
 
     private fun updateListByDate() {
         dateMain.text = setDateFormat(calendar.time)
-        entrys.clear()
         updateUI(dateMain.text.toString())
     }
 
@@ -159,5 +184,12 @@ class MainFragment : Fragment() {
 
     private fun setDateFormat(date: Date) : String {
         return SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(date.time)
+    }
+
+    private fun setStringFormat(date: String) : Date {
+        val cal = Calendar.getInstance()
+        cal.time = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).parse(date)!!
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).plus(1))
+        return cal.time
     }
 }
