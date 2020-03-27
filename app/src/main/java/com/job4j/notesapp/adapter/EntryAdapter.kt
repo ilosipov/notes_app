@@ -1,9 +1,11 @@
 package com.job4j.notesapp.adapter
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.job4j.notesapp.R
@@ -17,7 +19,9 @@ import com.job4j.notesapp.model.Entry
  */
 
 class EntryAdapter(private var context: Context, private var resource: Int,
-                   private var entrys: List<Entry>) : RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
+                   private var entrys: List<Entry>) :
+    RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
+    private lateinit var listener : Listener
 
     class EntryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -27,12 +31,39 @@ class EntryAdapter(private var context: Context, private var resource: Int,
 
     override fun onBindViewHolder(holder: EntryViewHolder, position: Int) {
         val entry = entrys[position]
+        val itemView = holder.itemView
 
+        val btnDelete = holder.itemView.findViewById<ImageView>(R.id.btn_delete_entry)
         val textEntry = holder.itemView.findViewById<TextView>(R.id.text_entry)
-        textEntry.text = entry.text
+        if (!entry.checked) {
+            textEntry.text = entry.text
+            btnDelete.visibility = View.GONE
+        } else {
+            textEntry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            textEntry.setTextColor(context.resources.getColor(R.color.colorLight))
+            textEntry.text = entry.text
+            btnDelete.visibility = View.VISIBLE
+        }
+
+        itemView.setOnClickListener {
+            listener.onClick(position)
+        }
+
+        btnDelete.setOnClickListener {
+            listener.onClickDelete(position)
+        }
     }
 
     override fun getItemCount(): Int {
         return entrys.size
+    }
+
+    interface Listener {
+        fun onClick(position: Int)
+        fun onClickDelete(position: Int)
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
     }
 }

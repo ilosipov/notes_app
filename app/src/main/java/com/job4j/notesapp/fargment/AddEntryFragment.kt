@@ -4,15 +4,16 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.R
 import com.job4j.notesapp.store.EntryBaseHelper
@@ -51,41 +52,50 @@ class AddEntryFragment : Fragment() {
 
         store = EntryBaseHelper(context!!).writableDatabase
 
-        imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-
         editText = view.findViewById(R.id.edit_text_entry)
+        editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
         editText.requestFocus()
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) { saveData() }
+            true
+        }
 
         dateEntry = view.findViewById(R.id.text_date_add)
         dateEntry.text = arguments?.get("date_entry").toString()
 
         btnPositive = view.findViewById(R.id.btn_positive_entry)
-        btnPositive.setOnClickListener(this::onClickPositive)
+        btnPositive.setOnClickListener{ saveData() }
 
         btnNegative = view.findViewById(R.id.btn_negative_entry)
-        btnNegative.setOnClickListener(this::onClickNegative)
+        btnNegative.setOnClickListener{
+            imm.hideSoftInputFromWindow(editText.windowToken, 0)
+            activity?.supportFragmentManager?.popBackStack()
+        }
 
         return view
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun onClickPositive(v: View) {
-        Log.d(log, "onClickPositive: click positive.")
+    private fun saveData() {
         imm.hideSoftInputFromWindow(editText.windowToken, 0)
-
-        val contentValues = ContentValues()
-        contentValues.put(EntrySchema.EntryTable.Cols.DATE, arguments?.get("date_entry").toString())
-        contentValues.put(EntrySchema.EntryTable.Cols.TEXT, editText.text.toString().trim())
-        store.insert(EntrySchema.EntryTable.NAME, null, contentValues)
-
+        if (editText.text.isNotEmpty()) {
+            val contentValues = ContentValues()
+            contentValues.put(EntrySchema.EntryTable.Cols.DATE, arguments?.get("date_entry").toString())
+            contentValues.put(EntrySchema.EntryTable.Cols.TEXT, editText.text.toString().trim())
+            store.insert(EntrySchema.EntryTable.NAME, null, contentValues)
+        }
         activity?.supportFragmentManager?.popBackStack()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun onClickNegative(v: View) {
-        Log.d(log, "onClickNegative: click negative.")
+    override fun onResume() {
+        super.onResume()
+        imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         imm.hideSoftInputFromWindow(editText.windowToken, 0)
-        activity?.supportFragmentManager?.popBackStack()
     }
 }

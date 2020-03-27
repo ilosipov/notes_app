@@ -22,7 +22,8 @@ class EntryBaseHelper(context: Context) : SQLiteOpenHelper(context, name_databas
         db?.execSQL("create table ${EntrySchema.EntryTable.NAME}(" +
                 "_id integer primary key autoincrement," +
                 "${EntrySchema.EntryTable.Cols.DATE}," +
-                "${EntrySchema.EntryTable.Cols.TEXT})")
+                "${EntrySchema.EntryTable.Cols.TEXT}," +
+                "${EntrySchema.EntryTable.Cols.CHECKED})")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

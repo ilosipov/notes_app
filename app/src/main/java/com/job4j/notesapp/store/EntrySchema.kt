@@ -18,6 +18,7 @@ class EntrySchema {
             companion object {
                 const val DATE = "date"
                 const val TEXT = "text"
+                const val CHECKED = "checked"
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.job4j.notesapp.fargment
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import com.job4j.notesapp.store.EntryBaseHelper
 import com.job4j.notesapp.store.EntrySchema
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Класс MainFragment - главное представление
@@ -28,8 +30,8 @@ import java.util.*
 
 class MainFragment : Fragment() {
     private val log = "MainFragment"
-
     private var calendar = Calendar.getInstance()
+    private var entrys = ArrayList<Entry>()
 
     private lateinit var store : SQLiteDatabase
     private lateinit var adapter: EntryAdapter
@@ -53,25 +55,21 @@ class MainFragment : Fragment() {
         dateMain.text = setDateFormat(calendar.time)
 
         recyclerView = view.findViewById(R.id.recycler_view_main)
-
         barBottom = view.findViewById(R.id.bottom_bar)
         (requireActivity() as AppCompatActivity).setSupportActionBar(barBottom)
 
         btnAdd = view.findViewById(R.id.btn_add)
         btnAdd.setOnClickListener(this::onClickAdd)
 
-        updateUI()
-
+        updateUI(dateMain.text.toString())
         return view
     }
 
-    private fun updateUI() {
-        Log.d(log, "updateUI: initialization list entry.")
-        val entrys = ArrayList<Entry>()
-
-        val cursor = this.store.query(
+    private fun updateUI(date: String) {
+        entrys.clear()
+        val cursor = store.query(
             EntrySchema.EntryTable.NAME,
-            null, "date = ?", arrayOf(dateMain.text.toString()),
+            null, "date = ?", arrayOf(date),
             null, null, null
         )
         cursor.moveToFirst()
@@ -79,26 +77,65 @@ class MainFragment : Fragment() {
             entrys.add(Entry(
                 cursor.getInt(cursor.getColumnIndex("_id")),
                 cursor.getString(cursor.getColumnIndex("date")),
-                cursor.getString(cursor.getColumnIndex("text"))
+                cursor.getString(cursor.getColumnIndex("text")),
+                cursor.getInt(cursor.getColumnIndex("checked")) != 0
             ))
             cursor.moveToNext()
         }
         cursor.close()
 
+        Collections.sort(entrys, Entry())
         adapter = context?.let { EntryAdapter(it, R.layout.view_entry, entrys) }!!
+        adapter.setListener(object : EntryAdapter.Listener {
+            override fun onClick(position: Int) { updateData(position) }
+            override fun onClickDelete(position: Int) { deleteData(position) }
+        })
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
     }
 
+    private fun updateData(position: Int) {
+        val scrollPosition = recyclerView.layoutManager
+            ?.onSaveInstanceState()
+        entrys[position].checked = !entrys[position].checked
+
+        val contentValues = ContentValues()
+        contentValues.put(EntrySchema.EntryTable.Cols.CHECKED, entrys[position].checked)
+        store.update(EntrySchema.EntryTable.NAME, contentValues, "_id = ?",
+            arrayOf("${entrys[position].id}"))
+
+        Collections.sort(entrys, Entry())
+        adapter.notifyItemChanged(position)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager
+            ?.onRestoreInstanceState(scrollPosition)
+    }
+
+    private fun deleteData(position: Int) {
+        val scrollPosition = recyclerView.layoutManager
+            ?.onSaveInstanceState()
+        store.delete(EntrySchema.EntryTable.NAME, "_id = ?", arrayOf("${entrys[position].id}"))
+        entrys.remove(entrys[position])
+
+        Collections.sort(entrys, Entry())
+        adapter.notifyItemChanged(position)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager?.onRestoreInstanceState(scrollPosition)
+    }
+
     @Suppress("UNUSED_PARAMETER")
     private fun onClickAdd(v: View) {
-        Log.d(log, "onClickAdd: click button.")
-        activity?.supportFragmentManager
-            ?.beginTransaction()
+        activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.fragment_container, AddEntryFragment()
                 .newInstance(dateMain.text.toString()))
             ?.addToBackStack(null)
             ?.commit()
+    }
+
+    private fun updateListByDate() {
+        dateMain.text = setDateFormat(calendar.time)
+        entrys.clear()
+        updateUI(dateMain.text.toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -109,16 +146,12 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.btn_left -> {
-                Log.d(log, "onClick: click btn left.")
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH).minus(1))
-                dateMain.text = setDateFormat(calendar.time)
-                updateUI()
+                updateListByDate()
             }
             R.id.btn_right -> {
-                Log.d(log, "onClick: click btn right.")
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH).plus(1))
-                dateMain.text = setDateFormat(calendar.time)
-                updateUI()
+                updateListByDate()
             }
         }
         return super.onOptionsItemSelected(item)
