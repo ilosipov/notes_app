@@ -21,11 +21,10 @@ class FolderBaseHelper(context: Context) : SQLiteOpenHelper(context, name_databa
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("create table ${FolderSchema.FolderTable.NAME}(" +
                 "_id integer primary key autoincrement," +
-                "${FolderSchema.FolderTable.Cols.NAME_FOLDER})")
+                "${FolderSchema.FolderTable.Cols.NAME_FOLDER}," +
+                "${FolderSchema.FolderTable.Cols.COLOR_FOLDER})")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not yet implemented")
     }
-
 }

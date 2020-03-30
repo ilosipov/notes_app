@@ -17,6 +17,7 @@ class FolderSchema {
         class Cols {
             companion object {
                 const val NAME_FOLDER = "name_folder"
+                const val COLOR_FOLDER = "color_folder"
             }
         }
     }

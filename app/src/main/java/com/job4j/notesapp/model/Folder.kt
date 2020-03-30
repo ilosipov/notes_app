@@ -9,7 +9,8 @@ package com.job4j.notesapp.model
 
 data class Folder(
     var id: Int = 0,
-    var name: String = "") {
+    var name: String = "",
+    var colorFolder: String = "") {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -19,6 +20,7 @@ data class Folder(
 
         if (id != other.id) return false
         if (name != other.name) return false
+        if (colorFolder != other.colorFolder) return false
 
         return true
     }
@@ -26,10 +28,11 @@ data class Folder(
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + name.hashCode()
+        result = 31 * result + colorFolder.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Folder: id = $id, name = $name"
+        return "Folder: id = $id, name = $name, colorFolder = $colorFolder"
     }
 }

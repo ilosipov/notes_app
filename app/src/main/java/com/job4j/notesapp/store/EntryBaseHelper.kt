@@ -27,6 +27,5 @@ class EntryBaseHelper(context: Context) : SQLiteOpenHelper(context, name_databas
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not yet implemented")
     }
 }

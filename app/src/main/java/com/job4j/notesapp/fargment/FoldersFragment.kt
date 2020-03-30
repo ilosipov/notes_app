@@ -1,5 +1,6 @@
 package com.job4j.notesapp.fargment
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +10,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
+import com.job4j.notesapp.adapter.FolderAdapter
 import com.job4j.notesapp.dialog.AddFolderDialog
 import com.job4j.notesapp.dialog.AddFolderDialogListener
 import com.job4j.notesapp.model.Folder
@@ -26,6 +29,7 @@ class FoldersFragment : Fragment() {
     private lateinit var recyclerView : RecyclerView
     private lateinit var btnAddFolder : FloatingActionButton
     private lateinit var store : SQLiteDatabase
+    private lateinit var adapter : FolderAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,6 +44,7 @@ class FoldersFragment : Fragment() {
         btnAddFolder = view.findViewById(R.id.btn_add_folder)
         btnAddFolder.setOnClickListener(this::onClickAddFolder)
 
+        initUI()
         return view
     }
 
@@ -54,11 +59,16 @@ class FoldersFragment : Fragment() {
         while (!cursor.isAfterLast) {
             folders.add(Folder(
                 cursor.getInt(cursor.getColumnIndex("_id")),
-                cursor.getString(cursor.getColumnIndex("name_folder"))
+                cursor.getString(cursor.getColumnIndex("name_folder")),
+                cursor.getString(cursor.getColumnIndex("color_folder"))
             ))
             cursor.moveToNext()
         }
         cursor.close()
+
+        adapter = activity?.let { FolderAdapter(it, R.layout.view_folder, folders) }!!
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -69,6 +79,13 @@ class FoldersFragment : Fragment() {
 
         dialogAddFolder.setCallback(object : AddFolderDialogListener {
             override fun onClickPositive(dialog: DialogFragment, nameFolder: String) {
+                val contentValues = ContentValues()
+                contentValues.put(FolderSchema.FolderTable.Cols.NAME_FOLDER,
+                    if (nameFolder.isNotEmpty()) nameFolder else getString(R.string.default_name_folder))
+                contentValues.put(FolderSchema.FolderTable.Cols.COLOR_FOLDER, getColorFolder())
+                store.insert(FolderSchema.FolderTable.NAME, null, contentValues)
+
+                initUI()
                 dialogAddFolder.dismiss()
             }
 
@@ -77,5 +94,13 @@ class FoldersFragment : Fragment() {
             }
         })
         fragmentManager?.let { dialogAddFolder.show(it, "dialog_add_folder") }
+    }
+
+    private fun getColorFolder() : String {
+        val colors = arrayListOf(
+            "#0000FF", "#FF0000", "#FFA500", "#00FF00", "#FFFF00", "#C8A2C8", "#00BFFF", "#660099",
+            "#008080", "#CD853F", "#CC8899", "#3A75C4", "#FDE910", "#F3C3F3", "#C0C0C0", "#ACE1AF"
+        )
+        return colors[(Math.random()*colors.size - 1).toInt()]
     }
 }
