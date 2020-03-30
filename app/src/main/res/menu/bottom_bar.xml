@@ -16,4 +16,11 @@
         app:showAsAction="ifRoom">
 
     </item>
+    <item
+        android:id="@+id/btn_folders"
+        android:icon="@drawable/ic_folders"
+        android:title="@string/title_menu_folders"
+        app:showAsAction="ifRoom">
+
+    </item>
 </menu>

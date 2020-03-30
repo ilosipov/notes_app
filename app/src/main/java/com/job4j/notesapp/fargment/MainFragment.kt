@@ -1,6 +1,7 @@
 package com.job4j.notesapp.fargment
 
 import android.content.ContentValues
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
+import com.job4j.notesapp.activity.FoldersActivity
 import com.job4j.notesapp.adapter.EntryAdapter
 import com.job4j.notesapp.adapter.EntryListener
 import com.job4j.notesapp.adapter.SwipeToTransferCallback
@@ -177,6 +179,9 @@ class MainFragment : Fragment() {
             R.id.btn_right -> {
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH).plus(1))
                 updateListByDate()
+            }
+            R.id.btn_folders -> {
+                startActivity(Intent(context, FoldersActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)
