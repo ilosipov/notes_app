@@ -10,6 +10,5 @@ package com.job4j.notesapp.adapter
 interface EntryListener {
 
     fun onClick(position: Int)
-
     fun onClickDelete(position: Int)
 }

@@ -1,8 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Notes App</string>
     <string name="title_menu_left">left</string>
     <string name="title_menu_right">right</string>
     <string name="title_menu_folders">folders</string>
     <string name="hint_entry">Запись..</string>
     <string name="title_folders_fragment">Folders</string>
+
+<!--    Text AddFolderDialog -->
+    <string name="title_add_folder_dialog">New folder</string>
+    <string name="hint_add_folder_dialog">Name folder..</string>
+    <string name="btn_dialog_folder_positive" tools:ignore="ButtonCase,Typos">Ok</string>
+    <string name="btn_dialog_folder_negative">Cancel</string>
 </resources>
