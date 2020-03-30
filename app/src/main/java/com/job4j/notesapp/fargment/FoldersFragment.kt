@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.FolderAdapter
+import com.job4j.notesapp.adapter.FolderListener
 import com.job4j.notesapp.dialog.AddFolderDialog
 import com.job4j.notesapp.dialog.AddFolderDialogListener
 import com.job4j.notesapp.model.Folder
@@ -50,11 +51,8 @@ class FoldersFragment : Fragment() {
 
     private fun initUI() {
         folders.clear()
-        val cursor = store.query(
-            FolderSchema.FolderTable.NAME,
-            null, null, null,
-            null, null, null
-        )
+        val cursor = store.query(FolderSchema.FolderTable.NAME,
+            null, null, null, null, null, null)
         cursor.moveToFirst()
         while (!cursor.isAfterLast) {
             folders.add(Folder(
@@ -67,6 +65,15 @@ class FoldersFragment : Fragment() {
         cursor.close()
 
         adapter = activity?.let { FolderAdapter(it, R.layout.view_folder, folders) }!!
+        adapter.setListener(object : FolderListener {
+            override fun onClick(position: Int) {
+                Log.d(log, "onClickFolder: position = $position")
+            }
+
+            override fun onLongClick(position: Int) {
+                onLongClickFolder(position)
+            }
+        })
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
     }
@@ -88,12 +95,13 @@ class FoldersFragment : Fragment() {
                 initUI()
                 dialogAddFolder.dismiss()
             }
-
-            override fun onClickNegative(dialog: DialogFragment) {
-                dialogAddFolder.dismiss()
-            }
         })
         fragmentManager?.let { dialogAddFolder.show(it, "dialog_add_folder") }
+    }
+
+    private fun onLongClickFolder(position: Int) {
+        Log.d(log, "onLongClickFolder")
+
     }
 
     private fun getColorFolder() : String {

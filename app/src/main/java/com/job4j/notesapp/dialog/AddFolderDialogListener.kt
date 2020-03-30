@@ -12,5 +12,4 @@ import androidx.fragment.app.DialogFragment
 interface AddFolderDialogListener {
 
     fun onClickPositive(dialog: DialogFragment, nameFolder: String)
-    fun onClickNegative(dialog: DialogFragment)
 }

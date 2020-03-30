@@ -1,5 +1,6 @@
 package com.job4j.notesapp.dialog
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.drawable.ColorDrawable
@@ -18,8 +19,9 @@ import com.job4j.notesapp.R
  */
 
 class AddFolderDialog : DialogFragment() {
-    private lateinit var callbackDialog : AddFolderDialogListener
+    private lateinit var listener : AddFolderDialogListener
 
+    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_new_folder, null)
 
@@ -27,9 +29,9 @@ class AddFolderDialog : DialogFragment() {
         val btnPositive = view.findViewById<TextView>(R.id.btn_dialog_folder_positive)
         val btnNegative = view.findViewById<TextView>(R.id.btn_dialog_folder_negative)
 
-        btnPositive.setOnClickListener { callbackDialog.onClickPositive(this,
+        btnPositive.setOnClickListener { listener.onClickPositive(this,
             editName.text.toString().trim()) }
-        btnNegative.setOnClickListener { callbackDialog.onClickNegative(this) }
+        btnNegative.setOnClickListener { this.dismiss()}
 
         val alertDialog = activity?.let { AlertDialog.Builder(it) }
         alertDialog?.setView(view)
@@ -43,6 +45,6 @@ class AddFolderDialog : DialogFragment() {
     }
 
     fun setCallback(callback: AddFolderDialogListener) {
-        this.callbackDialog = callback
+        this.listener = callback
     }
 }
