@@ -102,16 +102,17 @@ class FoldersFragment : Fragment() {
     private fun onLongClickFolder(position: Int) {
         Log.d(log, "onLongClickFolder")
         val fm = activity?.supportFragmentManager
-
-        val bottomFolderDialog = BottomFolderDialog()
         val bundle = Bundle()
         bundle.putInt("id_folder", position)
+        bundle.putString("name_folder", folders[position].name)
+
+        val bottomFolderDialog = BottomFolderDialog()
         bottomFolderDialog.arguments = bundle
         bottomFolderDialog.setCallback(object : BottomFolderDialogListener {
             override fun onClickDeleteFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
-                val dialogDeleteFolder = DeleteFolderDialog().newInstance(position)
+                val dialogDeleteFolder = DeleteFolderDialog().newInstance(position, folders[position].name)
                 dialogDeleteFolder.setCallback(object : PositiveDialogListener {
-                    override fun onClickPositive(dialog: DialogFragment, position: Int) {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int, nameFolder: String) {
                         store.delete(FolderSchema.FolderTable.NAME, "_id = ?",
                             arrayOf( "${folders[position].id}" ))
                         initUI()
@@ -123,14 +124,24 @@ class FoldersFragment : Fragment() {
             }
 
             override fun onClickRenameFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
-                val dialogRenameFolder = RenameFolderDialog()
-                fm?.let { dialogRenameFolder.newInstance(position).show(it, "rename_folder_dialog") }
+                val dialogRenameFolder = RenameFolderDialog().newInstance(position, folders[position].name)
+                dialogRenameFolder.setCallback(object : PositiveDialogListener {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int, nameFolder: String) {
+                        val contentValues = ContentValues()
+                        contentValues.put(FolderSchema.FolderTable.Cols.NAME_FOLDER, nameFolder)
+                        store.update(FolderSchema.FolderTable.NAME, contentValues, "_id = ?",
+                            arrayOf( "${folders[position].id}" ))
+                        initUI()
+                        dialog.dismiss()
+                    }
+                })
+                fm?.let { dialogRenameFolder.show(it, "rename_folder_dialog") }
                 bottomFolderDialog.dismiss()
             }
 
             override fun onClickUpdateFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
-                val dialogUpdateColorFolder = UpdateColorFolderDialog()
-                fm?.let { dialogUpdateColorFolder.newInstance(position).show(it, "update_folder_dialog") }
+                val dialogUpdateColorFolder = UpdateColorFolderDialog().newInstance(position)
+                fm?.let { dialogUpdateColorFolder.show(it, "update_folder_dialog") }
                 bottomFolderDialog.dismiss()
             }
         })

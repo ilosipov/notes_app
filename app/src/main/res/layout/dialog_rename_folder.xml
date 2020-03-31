@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
@@ -13,13 +14,13 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/title_delete_folder_dialog"
+            android:id="@+id/title_rename_dialog_folder"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
-            android:text="@string/title_delete_folder_dialog"
+            android:text="@string/title_rename_folder_dialog"
             android:textSize="16sp"
             android:textColor="@color/colorTextLight"
             android:fontFamily="@font/roboto_medium"
@@ -29,27 +30,32 @@
 
         </TextView>
 
-        <TextView
-            android:id="@+id/text_delete_folder_dialog"
+        <EditText
+            android:id="@+id/edit_rename_dialog_folder"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="70dp"
-            android:text="@string/text_delete_folder_dialog"
+            android:hint="@string/hint_rename_folder_dialog"
+            android:background="@null"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:imeOptions="actionDone"
             android:textSize="15sp"
             android:textColor="@color/colorTextDark"
-            android:fontFamily="@font/roboto_light"
+            android:inputType="text|textNoSuggestions|textCapSentences"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_delete_folder_dialog">
+            app:layout_constraintTop_toBottomOf="@+id/title_rename_dialog_folder"
+            tools:ignore="Autofill">
 
-        </TextView>
+        </EditText>
 
         <TextView
-            android:id="@+id/btn_positive_delete_folder"
+            android:id="@+id/btn_positive_rename_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="4dp"
@@ -58,7 +64,7 @@
             android:paddingBottom="4dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="18dp"
-            android:text="@string/btn_positive_delete_folder"
+            android:text="@string/btn_positive_rename_folder"
             android:textSize="16sp"
             android:textColor="@color/colorTextDark"
             android:fontFamily="@font/roboto_medium"
@@ -68,19 +74,19 @@
         </TextView>
 
         <TextView
-            android:id="@+id/btn_negative_delete_folder"
+            android:id="@+id/btn_negative_rename_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="18dp"
-            android:text="@string/btn_negative_delete_folder"
+            android:text="@string/btn_negative_rename_folder"
             android:textSize="16sp"
             android:textColor="@color/colorTextDark"
             android:fontFamily="@font/roboto_medium"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_positive_delete_folder">
+            app:layout_constraintEnd_toStartOf="@+id/btn_positive_rename_folder">
 
         </TextView>
 

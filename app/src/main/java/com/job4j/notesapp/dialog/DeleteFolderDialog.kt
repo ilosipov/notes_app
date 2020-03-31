@@ -20,9 +20,10 @@ import com.job4j.notesapp.R
 class DeleteFolderDialog : DialogFragment() {
     private lateinit var listener : PositiveDialogListener
 
-    fun newInstance(position: Int) : DeleteFolderDialog {
+    fun newInstance(position: Int, nameFolder: String) : DeleteFolderDialog {
         val bundle = Bundle()
         bundle.putInt("id_folder", position)
+        bundle.putString("name_folder", nameFolder)
 
         val deleteFolderDialog = DeleteFolderDialog()
         deleteFolderDialog.arguments = bundle
@@ -34,7 +35,9 @@ class DeleteFolderDialog : DialogFragment() {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_delete_folder, null)
 
         val btnPositive = view.findViewById<TextView>(R.id.btn_positive_delete_folder)
-        btnPositive.setOnClickListener { listener.onClickPositive(this, arguments!!.getInt("id_folder")) }
+        btnPositive.setOnClickListener {
+            listener.onClickPositive(this, arguments!!.getInt("id_folder"),
+                arguments?.getString("name_folder")!!) }
         val btnNegative = view.findViewById<TextView>(R.id.btn_negative_delete_folder)
         btnNegative.setOnClickListener { this.dismiss() }
 

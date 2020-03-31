@@ -18,7 +18,13 @@
 
 <!--    Text DialogDeleteFolder -->
     <string name="title_delete_folder_dialog">Remove folder</string>
-    <string name="text_delete_folder_dialog">this folder will be deleted along with all its notes</string>
+    <string name="text_delete_folder_dialog">This folder will be deleted along with all its notes</string>
     <string name="btn_positive_delete_folder" tools:ignore="ButtonCase,Typos">Ok</string>
     <string name="btn_negative_delete_folder">Cancel</string>
+
+<!--    Text DialogRenameFolder -->
+    <string name="title_rename_folder_dialog">Rename folder</string>
+    <string name="hint_rename_folder_dialog">New name folder..</string>
+    <string name="btn_positive_rename_folder" tools:ignore="ButtonCase,Typos">Ok</string>
+    <string name="btn_negative_rename_folder">Cancel</string>
 </resources>
