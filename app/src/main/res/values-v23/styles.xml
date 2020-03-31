@@ -10,6 +10,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="bottomSheetDialogTheme">@style/BottomDialogTheme</item>
     </style>
 
 </resources>

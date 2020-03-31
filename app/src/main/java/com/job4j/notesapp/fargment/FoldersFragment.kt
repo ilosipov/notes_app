@@ -16,8 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.FolderAdapter
 import com.job4j.notesapp.adapter.FolderListener
-import com.job4j.notesapp.dialog.AddFolderDialog
-import com.job4j.notesapp.dialog.AddFolderDialogListener
+import com.job4j.notesapp.dialog.*
 import com.job4j.notesapp.model.Folder
 import com.job4j.notesapp.store.FolderBaseHelper
 import com.job4j.notesapp.store.FolderSchema
@@ -101,7 +100,26 @@ class FoldersFragment : Fragment() {
 
     private fun onLongClickFolder(position: Int) {
         Log.d(log, "onLongClickFolder")
+        val fm = activity?.supportFragmentManager
 
+        val bottomFolderDialog = BottomFolderDialog()
+        bottomFolderDialog.setCallback(object : BottomFolderDialogListener {
+            override fun onClickDeleteFolder(position: Int, bottomDialog: BottomFolderDialog) {
+                val dialogDeleteFolder = DeleteFolderDialog()
+                fm?.let { dialogDeleteFolder.newInstance(position).show(it, "delete_folder_dialog") }
+            }
+
+            override fun onClickRenameFolder(position: Int, bottomDialog: BottomFolderDialog) {
+                val dialogRenameFolder = RenameFolderDialog()
+                fm?.let { dialogRenameFolder.newInstance(position).show(it, "rename_folder_dialog") }
+            }
+
+            override fun onClickUpdateFolder(position: Int, bottomDialog: BottomFolderDialog) {
+                val dialogUpdateColorFolder = UpdateColorFolderDialog()
+                fm?.let { dialogUpdateColorFolder.newInstance(position).show(it, "update_folder_dialog") }
+            }
+        })
+        fm?.let { bottomFolderDialog.newInstance(position).show(it, "bottom_folder_dialog") }
     }
 
     private fun getColorFolder() : String {
