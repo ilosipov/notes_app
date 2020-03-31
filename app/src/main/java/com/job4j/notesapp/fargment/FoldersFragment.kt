@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.FolderAdapter
@@ -103,23 +104,38 @@ class FoldersFragment : Fragment() {
         val fm = activity?.supportFragmentManager
 
         val bottomFolderDialog = BottomFolderDialog()
+        val bundle = Bundle()
+        bundle.putInt("id_folder", position)
+        bottomFolderDialog.arguments = bundle
         bottomFolderDialog.setCallback(object : BottomFolderDialogListener {
-            override fun onClickDeleteFolder(position: Int, bottomDialog: BottomFolderDialog) {
-                val dialogDeleteFolder = DeleteFolderDialog()
-                fm?.let { dialogDeleteFolder.newInstance(position).show(it, "delete_folder_dialog") }
+            override fun onClickDeleteFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
+                val dialogDeleteFolder = DeleteFolderDialog().newInstance(position)
+                dialogDeleteFolder.setCallback(object : PositiveDialogListener {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int) {
+                        store.delete(FolderSchema.FolderTable.NAME, "_id = ?",
+                            arrayOf( "${folders[position].id}" ))
+                        initUI()
+                        dialog.dismiss()
+                    }
+                })
+                fm?.let { dialogDeleteFolder.show(it, "delete_folder_dialog") }
+                bottomFolderDialog.dismiss()
             }
 
-            override fun onClickRenameFolder(position: Int, bottomDialog: BottomFolderDialog) {
+            override fun onClickRenameFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogRenameFolder = RenameFolderDialog()
                 fm?.let { dialogRenameFolder.newInstance(position).show(it, "rename_folder_dialog") }
+                bottomFolderDialog.dismiss()
             }
 
-            override fun onClickUpdateFolder(position: Int, bottomDialog: BottomFolderDialog) {
+            override fun onClickUpdateFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogUpdateColorFolder = UpdateColorFolderDialog()
                 fm?.let { dialogUpdateColorFolder.newInstance(position).show(it, "update_folder_dialog") }
+                bottomFolderDialog.dismiss()
             }
         })
-        fm?.let { bottomFolderDialog.newInstance(position).show(it, "bottom_folder_dialog") }
+
+        fm?.let { bottomFolderDialog.show(it, "bottom_folder_dialog") }
     }
 
     private fun getColorFolder() : String {

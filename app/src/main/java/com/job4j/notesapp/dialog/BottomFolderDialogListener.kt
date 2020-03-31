@@ -1,5 +1,7 @@
 package com.job4j.notesapp.dialog
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 /**
  * Интерфейс BottomFolderDialogListener
  * @author Ilya Osipov (mailto:il.osipov.gm@gmail.com)
@@ -9,7 +11,7 @@ package com.job4j.notesapp.dialog
 
 interface BottomFolderDialogListener {
 
-    fun onClickDeleteFolder(position: Int, bottomDialog: BottomFolderDialog)
-    fun onClickRenameFolder(position: Int, bottomDialog: BottomFolderDialog)
-    fun onClickUpdateFolder(position: Int, bottomDialog: BottomFolderDialog)
+    fun onClickDeleteFolder(position: Int, bottomDialog: BottomSheetDialogFragment)
+    fun onClickRenameFolder(position: Int, bottomDialog: BottomSheetDialogFragment)
+    fun onClickUpdateFolder(position: Int, bottomDialog: BottomSheetDialogFragment)
 }
