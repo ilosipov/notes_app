@@ -6,6 +6,7 @@
     <string name="hint_entry">Запись..</string>
     <string name="title_folders_fragment">Folders</string>
     <string name="default_name_folder">New folder</string>
+    <string name="description_notes_fragment">folder</string>
 
 <!--    Text AddFolderDialog -->
     <string name="title_add_folder_dialog">New folder</string>

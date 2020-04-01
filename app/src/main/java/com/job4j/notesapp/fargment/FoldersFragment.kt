@@ -1,6 +1,7 @@
 package com.job4j.notesapp.fargment
 
 import android.content.ContentValues
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
@@ -15,12 +16,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
+import com.job4j.notesapp.activity.NotesActivity
 import com.job4j.notesapp.adapter.FolderAdapter
 import com.job4j.notesapp.adapter.FolderListener
 import com.job4j.notesapp.dialog.*
 import com.job4j.notesapp.model.Folder
 import com.job4j.notesapp.store.FolderBaseHelper
 import com.job4j.notesapp.store.FolderSchema
+
+/**
+ * Класс FoldersFragment - представление списка папок с записями
+ * @author Ilya Osipov (mailto:il.osipov.gm@gmail.com)
+ * @since 01.04.2020
+ * @version $Id$
+ */
 
 class FoldersFragment : Fragment() {
     private val log = "FoldersFragment"
@@ -67,12 +76,11 @@ class FoldersFragment : Fragment() {
         adapter = activity?.let { FolderAdapter(it, R.layout.view_folder, folders) }!!
         adapter.setListener(object : FolderListener {
             override fun onClick(position: Int) {
-                Log.d(log, "onClickFolder: position = $position")
+                startActivity(Intent(context, NotesActivity::class.java)
+                    .putExtra("id_folder", folders[position].id)
+                    .putExtra("name_folder", folders[position].name))
             }
-
-            override fun onLongClick(position: Int) {
-                onLongClickFolder(position)
-            }
+            override fun onLongClick(position: Int) { onLongClickFolder(position) }
         })
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter

@@ -20,6 +20,10 @@
             android:name=".activity.FoldersActivity"
             android:parentActivityName=".activity.MainActivity">
         </activity>
+        <activity
+            android:name=".activity.NotesActivity"
+            android:parentActivityName=".activity.FoldersActivity">
+        </activity>
     </application>
 
 </manifest>
