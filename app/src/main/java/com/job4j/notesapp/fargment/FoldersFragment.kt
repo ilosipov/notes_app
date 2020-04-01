@@ -101,21 +101,26 @@ class FoldersFragment : Fragment() {
 
     private fun onLongClickFolder(position: Int) {
         Log.d(log, "onLongClickFolder")
+        val scrollPosition = recyclerView.layoutManager?.onSaveInstanceState()
         val fm = activity?.supportFragmentManager
         val bundle = Bundle()
-        bundle.putInt("id_folder", position)
+        bundle.putInt("position_folder", position)
         bundle.putString("name_folder", folders[position].name)
 
         val bottomFolderDialog = BottomFolderDialog()
         bottomFolderDialog.arguments = bundle
         bottomFolderDialog.setCallback(object : BottomFolderDialogListener {
             override fun onClickDeleteFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
-                val dialogDeleteFolder = DeleteFolderDialog().newInstance(position, folders[position].name)
+                val dialogDeleteFolder = DeleteFolderDialog().newInstance(position)
                 dialogDeleteFolder.setCallback(object : PositiveDialogListener {
-                    override fun onClickPositive(dialog: DialogFragment, position: Int, nameFolder: String) {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int,
+                                                 nameFolder: String, colorFolder: String) {
                         store.delete(FolderSchema.FolderTable.NAME, "_id = ?",
                             arrayOf( "${folders[position].id}" ))
-                        initUI()
+                        folders.remove(folders[position])
+                        adapter.notifyItemRemoved(position)
+                        recyclerView.adapter = adapter
+                        recyclerView.layoutManager?.onRestoreInstanceState(scrollPosition)
                         dialog.dismiss()
                     }
                 })
@@ -126,12 +131,16 @@ class FoldersFragment : Fragment() {
             override fun onClickRenameFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogRenameFolder = RenameFolderDialog().newInstance(position, folders[position].name)
                 dialogRenameFolder.setCallback(object : PositiveDialogListener {
-                    override fun onClickPositive(dialog: DialogFragment, position: Int, nameFolder: String) {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int,
+                                                 nameFolder: String, colorFolder: String) {
                         val contentValues = ContentValues()
                         contentValues.put(FolderSchema.FolderTable.Cols.NAME_FOLDER, nameFolder)
                         store.update(FolderSchema.FolderTable.NAME, contentValues, "_id = ?",
                             arrayOf( "${folders[position].id}" ))
-                        initUI()
+                        folders[position].name = nameFolder
+                        adapter.notifyItemChanged(position)
+                        recyclerView.adapter = adapter
+                        recyclerView.layoutManager?.onRestoreInstanceState(scrollPosition)
                         dialog.dismiss()
                     }
                 })
@@ -141,11 +150,24 @@ class FoldersFragment : Fragment() {
 
             override fun onClickUpdateFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogUpdateColorFolder = UpdateColorFolderDialog().newInstance(position)
+                dialogUpdateColorFolder.setCallback(object : PositiveDialogListener {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int,
+                                                 nameFolder: String, colorFolder: String) {
+                        val contentValues = ContentValues()
+                        contentValues.put(FolderSchema.FolderTable.Cols.COLOR_FOLDER, colorFolder)
+                        store.update(FolderSchema.FolderTable.NAME, contentValues, "_id = ?",
+                            arrayOf( "${folders[position].id}" ))
+                        folders[position].colorFolder = colorFolder
+                        adapter.notifyItemChanged(position)
+                        recyclerView.adapter = adapter
+                        recyclerView.layoutManager?.onRestoreInstanceState(scrollPosition)
+                        dialog.dismiss()
+                    }
+                })
                 fm?.let { dialogUpdateColorFolder.show(it, "update_folder_dialog") }
                 bottomFolderDialog.dismiss()
             }
         })
-
         fm?.let { bottomFolderDialog.show(it, "bottom_folder_dialog") }
     }
 

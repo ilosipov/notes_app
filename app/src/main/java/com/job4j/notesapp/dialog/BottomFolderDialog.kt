@@ -23,14 +23,16 @@ class BottomFolderDialog : BottomSheetDialogFragment() {
         super.setupDialog(dialog, style)
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_bottom_folder, null)
 
-        Log.d("BottomTAG", "${arguments!!.getInt("id_folder")}")
         val btnDelete = view.findViewById<CardView>(R.id.btn_delete_folder)
         val btnRename = view.findViewById<CardView>(R.id.btn_rename_folder)
         val btnColor = view.findViewById<CardView>(R.id.btn_update_color_folder)
 
-        btnDelete.setOnClickListener { this.listener.onClickDeleteFolder(arguments!!.getInt("id_folder"), this) }
-        btnRename.setOnClickListener { this.listener.onClickRenameFolder(arguments!!.getInt("id_folder"), this) }
-        btnColor.setOnClickListener { this.listener.onClickUpdateFolder(arguments!!.getInt("id_folder"), this) }
+        btnDelete.setOnClickListener {
+            this.listener.onClickDeleteFolder(arguments!!.getInt("position_folder"), this) }
+        btnRename.setOnClickListener {
+            this.listener.onClickRenameFolder(arguments!!.getInt("position_folder"), this) }
+        btnColor.setOnClickListener {
+            this.listener.onClickUpdateFolder(arguments!!.getInt("position_folder"), this) }
 
         dialog.setContentView(view)
     }

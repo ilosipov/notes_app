@@ -22,7 +22,7 @@ class RenameFolderDialog : DialogFragment() {
 
     fun newInstance(position: Int, nameFolder: String) : RenameFolderDialog {
         val bundle = Bundle()
-        bundle.putInt("id_folder", position)
+        bundle.putInt("position_folder", position)
         bundle.putString("name_folder", nameFolder)
 
         val renameFolderDialog = RenameFolderDialog()
@@ -40,8 +40,10 @@ class RenameFolderDialog : DialogFragment() {
         editName.text = arguments?.getString("name_folder")
 
         btnPositive.setOnClickListener {
-            listener.onClickPositive(this, arguments!!.getInt("id_folder"),
-                editName.text.toString()) }
+            listener.onClickPositive(this, arguments!!.getInt("position_folder"),
+                if (editName.text.isNotEmpty())
+                    editName.text.toString()
+                else arguments!!.getString("name_folder")!!, "") }
         btnNegative.setOnClickListener { this.dismiss() }
 
         val alertDialog = activity?.let { AlertDialog.Builder(it) }

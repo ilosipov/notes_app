@@ -27,4 +27,8 @@
     <string name="hint_rename_folder_dialog">New name folder..</string>
     <string name="btn_positive_rename_folder" tools:ignore="ButtonCase,Typos">Ok</string>
     <string name="btn_negative_rename_folder">Cancel</string>
+
+<!--    Text DialogUpdateColorFolder -->
+    <string name="title_update_dialog_folder">Color change</string>
+    <string name="btn_negative_update_folder">Cancel</string>
 </resources>
