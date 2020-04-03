@@ -6,7 +6,6 @@
     <string name="hint_entry">Запись..</string>
     <string name="title_folders_fragment">Folders</string>
     <string name="default_name_folder">New folder</string>
-    <string name="description_notes_fragment">folder</string>
 
 <!--    Text AddFolderDialog -->
     <string name="title_add_folder_dialog">New folder</string>
@@ -32,4 +31,11 @@
 <!--    Text DialogUpdateColorFolder -->
     <string name="title_update_dialog_folder">Color change</string>
     <string name="btn_negative_update_folder">Cancel</string>
+    
+<!--    Text NotesFragment -->
+    <string name="description_notes_fragment">folder</string>
+
+<!--    Text NoteFragment -->
+    <string name="hint_title_note">Title</string>
+    <string name="hint_text_note">Text</string>
 </resources>
