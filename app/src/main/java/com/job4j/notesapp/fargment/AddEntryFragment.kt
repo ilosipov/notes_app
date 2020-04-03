@@ -71,7 +71,7 @@ class AddEntryFragment : Fragment() {
         btnNegative = view.findViewById(R.id.btn_negative_entry)
         btnNegative.setOnClickListener{
             imm.hideSoftInputFromWindow(editText.windowToken, 0)
-            activity?.supportFragmentManager?.popBackStack()
+            activity?.onBackPressed()
         }
 
         return view

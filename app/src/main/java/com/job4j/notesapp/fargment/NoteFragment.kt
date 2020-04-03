@@ -1,14 +1,24 @@
 package com.job4j.notesapp.fargment
 
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.R
+import com.job4j.notesapp.store.NoteBaseHelper
+import com.job4j.notesapp.store.NoteSchema
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Класс NoteFragment - представление для создания записи
@@ -23,10 +33,13 @@ class NoteFragment : Fragment() {
     private lateinit var btnBack : ImageView
     private lateinit var editTitle : EditText
     private lateinit var editText : EditText
+    private lateinit var store : SQLiteDatabase
+    private lateinit var imm : InputMethodManager
 
-    fun newInstance(idFolder: Int) : Fragment {
+    fun newInstance(idFolder: Int, idNote: Int) : Fragment {
         val bundle = Bundle()
         bundle.putInt("id_folder", idFolder)
+        bundle.putInt("id_note", idNote)
 
         val noteFragment = NoteFragment()
         noteFragment.arguments = bundle
@@ -35,35 +48,71 @@ class NoteFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d(log, "onCreateView: id folder = ${arguments?.getInt("id_folder")}.")
+        Log.d(log, "onCreateView: " +
+                "id folder = ${arguments?.getInt("id_folder")}, " +
+                "id note = ${arguments?.getInt("id_note")}.")
         val view = inflater.inflate(R.layout.fragment_note, container, false)
+        store = NoteBaseHelper(context!!).writableDatabase
 
         editTitle = view.findViewById(R.id.edit_title_note)
+        editTitle.imeOptions = EditorInfo.IME_ACTION_NEXT
+        editTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        editTitle.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+
         editText = view.findViewById(R.id.edit_body_note)
 
         btnBack = view.findViewById(R.id.btn_back_note)
-        btnBack.setOnClickListener { activity?.onBackPressed() }
+        btnBack.setOnClickListener {
+            if (arguments?.getInt("id_note") == 0) {
+                imm.hideSoftInputFromWindow(editText.windowToken, 0)
+            }
+            activity?.onBackPressed()
+        }
 
+        initUI()
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(log, "onStart.")
-    }
+    private fun initUI() {
+        if (arguments?.getInt("id_note") != 0) {
+            val cursor = store.query(NoteSchema.NoteTable.NAME,
+                null, "_id = ?",
+                arrayOf("${arguments!!.getInt("id_note")}"),
+                null, null, null
+            )
+            cursor.moveToFirst()
+            editTitle.setText(cursor.getString(cursor.getColumnIndex("title")))
+            editText.setText(cursor.getString(cursor.getColumnIndex("body")))
+            cursor.close()
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(log, "onPause.")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(log, "onStop.")
+        } else {
+            editText.requestFocus()
+            imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(log, "onDestroy.")
+        val contentValues = ContentValues()
+        contentValues.put(NoteSchema.NoteTable.Cols.DATE, getDateFormat())
+        contentValues.put(NoteSchema.NoteTable.Cols.TITLE, editTitle.text.toString().trim())
+        contentValues.put(NoteSchema.NoteTable.Cols.BODY, editText.text.toString().trim())
+
+        if (arguments?.getInt("id_note") != 0) {
+            store.update(NoteSchema.NoteTable.NAME, contentValues, "_id = ?",
+                arrayOf( "${arguments!!.getInt("id_note")}" ))
+        } else {
+            imm.hideSoftInputFromWindow(editText.windowToken, 0)
+            if (editText.text.isNotEmpty()) {
+                contentValues.put(NoteSchema.NoteTable.Cols.FOLDER_ID, arguments?.getInt("id_folder"))
+                store.insert(NoteSchema.NoteTable.NAME, null, contentValues)
+            }
+        }
+    }
+
+    private fun getDateFormat() : String {
+        return SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ENGLISH).format(Date())
     }
 }

@@ -23,7 +23,7 @@ import com.job4j.notesapp.model.Folder
 class FolderAdapter(private var context: Context, private var resource: Int,
                     private var folders: List<Folder>) :
     RecyclerView.Adapter<FolderAdapter.FolderViewHolder>() {
-    private lateinit var listener : FolderListener
+    private lateinit var listener : OnClickItemListener
 
     class FolderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -53,7 +53,7 @@ class FolderAdapter(private var context: Context, private var resource: Int,
         return folders.size
     }
 
-    fun setListener(listener: FolderListener) {
+    fun setListener(listener: OnClickItemListener) {
         this.listener = listener
     }
 }

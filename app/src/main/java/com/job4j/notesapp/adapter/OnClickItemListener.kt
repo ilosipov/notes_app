@@ -7,7 +7,7 @@ package com.job4j.notesapp.adapter
  * @version $Id$
  */
 
-interface FolderListener {
+interface OnClickItemListener {
 
     fun onClick(position: Int)
     fun onLongClick(position: Int)

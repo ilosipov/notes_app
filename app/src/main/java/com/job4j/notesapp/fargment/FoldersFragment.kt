@@ -18,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.activity.NotesActivity
 import com.job4j.notesapp.adapter.FolderAdapter
-import com.job4j.notesapp.adapter.FolderListener
+import com.job4j.notesapp.adapter.OnClickItemListener
 import com.job4j.notesapp.dialog.*
 import com.job4j.notesapp.model.Folder
 import com.job4j.notesapp.store.FolderBaseHelper
@@ -74,7 +74,7 @@ class FoldersFragment : Fragment() {
         cursor.close()
 
         adapter = activity?.let { FolderAdapter(it, R.layout.view_folder, folders) }!!
-        adapter.setListener(object : FolderListener {
+        adapter.setListener(object : OnClickItemListener {
             override fun onClick(position: Int) {
                 startActivity(Intent(context, NotesActivity::class.java)
                     .putExtra("id_folder", folders[position].id)
