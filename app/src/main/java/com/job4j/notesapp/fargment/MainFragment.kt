@@ -44,6 +44,7 @@ class MainFragment : Fragment() {
     private lateinit var barBottom : BottomAppBar
     private lateinit var recyclerView : RecyclerView
     private lateinit var btnAdd : FloatingActionButton
+    private lateinit var emptyText : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,7 @@ class MainFragment : Fragment() {
         Log.d(log, "onCreateView: initialization MainFragment.")
         store = EntryBaseHelper(context!!).writableDatabase
 
+        emptyText = view.findViewById(R.id.empty_text_main)
         dateMain = view.findViewById(R.id.text_date)
         dateMain.text = setDateFormat(calendar.time)
 
@@ -95,6 +97,15 @@ class MainFragment : Fragment() {
             override fun onClick(position: Int) { updateData(position) }
             override fun onClickDelete(position: Int) { deleteData(position) }
         })
+
+        if (entrys.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            emptyText.visibility = View.GONE
+        } else {
+            recyclerView.visibility = View.GONE
+            emptyText.visibility = View.VISIBLE
+        }
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 

@@ -33,12 +33,24 @@
 
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:id="@+id/empty_text_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_text_main"
+        android:textSize="13sp"
+        android:fontFamily="@font/roboto_light"
+        android:layout_gravity="center">
+
+    </TextView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="60dp"
         android:paddingBottom="60dp"
+        android:visibility="gone"
         app:layout_anchorGravity="center">
 
     </androidx.recyclerview.widget.RecyclerView>

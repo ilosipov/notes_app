@@ -1,11 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Notes App</string>
+
+<!--    Text FragmentNotes -->
+    <string name="empty_test_notes">There are no notes yet.</string>
+
+<!--    Text FragmentMain -->
+    <string name="empty_text_main">The list is empty on this date.</string>
+
+<!--    Text FragmentAddEntry-->
+    <string name="hint_entry">Write..</string>
+
+<!--    Text FragmentFolders -->
+    <string name="title_folders_fragment">Folders</string>
+    <string name="default_name_folder">New folder</string>
+    <string name="empty_text_folder">No folders have been created yet.</string>
+
+<!--    Text menu Main -->
     <string name="title_menu_left">left</string>
     <string name="title_menu_right">right</string>
     <string name="title_menu_folders">folders</string>
-    <string name="hint_entry">Запись..</string>
-    <string name="title_folders_fragment">Folders</string>
-    <string name="default_name_folder">New folder</string>
 
 <!--    Text AddFolderDialog -->
     <string name="title_add_folder_dialog">New folder</string>

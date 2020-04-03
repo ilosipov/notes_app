@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,8 @@ import com.job4j.notesapp.dialog.*
 import com.job4j.notesapp.model.Folder
 import com.job4j.notesapp.store.FolderBaseHelper
 import com.job4j.notesapp.store.FolderSchema
+import com.job4j.notesapp.store.NoteBaseHelper
+import com.job4j.notesapp.store.NoteSchema
 
 /**
  * Класс FoldersFragment - представление списка папок с записями
@@ -40,6 +43,7 @@ class FoldersFragment : Fragment() {
     private lateinit var btnAddFolder : FloatingActionButton
     private lateinit var store : SQLiteDatabase
     private lateinit var adapter : FolderAdapter
+    private lateinit var emptyText : TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -47,6 +51,7 @@ class FoldersFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_folders, container, false)
         store = FolderBaseHelper(context!!).writableDatabase
 
+        emptyText = view.findViewById(R.id.empty_text_folder)
         btnBack = view.findViewById(R.id.btn_back_folders)
         btnBack.setOnClickListener { activity!!.onBackPressed() }
 
@@ -72,6 +77,14 @@ class FoldersFragment : Fragment() {
             cursor.moveToNext()
         }
         cursor.close()
+
+        if (folders.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            emptyText.visibility = View.GONE
+        } else {
+            recyclerView.visibility = View.GONE
+            emptyText.visibility = View.VISIBLE
+        }
 
         adapter = activity?.let { FolderAdapter(it, R.layout.view_folder, folders) }!!
         adapter.setListener(object : OnClickItemListener {
@@ -123,8 +136,12 @@ class FoldersFragment : Fragment() {
                 dialogDeleteFolder.setCallback(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
+                        val storeNotes = NoteBaseHelper(context!!).writableDatabase
                         store.delete(FolderSchema.FolderTable.NAME, "_id = ?",
                             arrayOf( "${folders[position].id}" ))
+                        storeNotes.delete(NoteSchema.NoteTable.NAME, "folder_id = ?",
+                            arrayOf( "${folders[position].id}" ))
+
                         folders.remove(folders[position])
                         adapter.notifyItemRemoved(position)
                         recyclerView.adapter = adapter

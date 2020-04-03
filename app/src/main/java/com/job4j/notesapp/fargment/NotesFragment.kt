@@ -36,6 +36,7 @@ class NotesFragment : Fragment() {
     private lateinit var btnNewNote : FloatingActionButton
     private lateinit var adapter : NoteAdapter
     private lateinit var store : SQLiteDatabase
+    private lateinit var emptyText : TextView
 
     fun newInstance(id: Int, name: String) : Fragment {
         val bundle = Bundle()
@@ -53,6 +54,7 @@ class NotesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_notes, container, false)
         store = NoteBaseHelper(context!!).writableDatabase
 
+        emptyText = view.findViewById(R.id.empty_text_notes)
         titleFragment = view.findViewById(R.id.title_notes_fragment)
         titleFragment.text = arguments!!.getString("name_folder")
         btnBack = view.findViewById(R.id.btn_back_notes)
@@ -87,6 +89,14 @@ class NotesFragment : Fragment() {
             cursor.moveToNext()
         }
         cursor.close()
+
+        if (notes.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            emptyText.visibility = View.GONE
+        } else {
+            recyclerView.visibility = View.GONE
+            emptyText.visibility = View.VISIBLE
+        }
 
         Log.d(log, "notes: $notes")
         adapter = activity?.let { NoteAdapter(it, R.layout.view_note, notes) }!!
