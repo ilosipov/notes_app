@@ -19,7 +19,7 @@ import com.job4j.notesapp.R
  */
 
 class AddFolderDialog : DialogFragment() {
-    private lateinit var listener : AddFolderDialogListener
+    private lateinit var listener : PositiveDialogListener
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -29,8 +29,8 @@ class AddFolderDialog : DialogFragment() {
         val btnPositive = view.findViewById<TextView>(R.id.btn_dialog_folder_positive)
         val btnNegative = view.findViewById<TextView>(R.id.btn_dialog_folder_negative)
 
-        btnPositive.setOnClickListener { listener.onClickPositive(this,
-            editName.text.toString().trim()) }
+        btnPositive.setOnClickListener { listener.onClickPositive(this, 0,
+            editName.text.toString().trim(), "") }
         btnNegative.setOnClickListener { this.dismiss()}
 
         val alertDialog = activity?.let { AlertDialog.Builder(it) }
@@ -44,7 +44,7 @@ class AddFolderDialog : DialogFragment() {
         return alertDialogCreate as Dialog
     }
 
-    fun setCallback(callback: AddFolderDialogListener) {
-        this.listener = callback
+    fun setListener(listener: PositiveDialogListener) {
+        this.listener = listener
     }
 }

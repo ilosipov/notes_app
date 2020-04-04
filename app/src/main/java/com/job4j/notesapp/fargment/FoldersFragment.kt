@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,6 @@ import com.job4j.notesapp.store.NoteSchema
  */
 
 class FoldersFragment : Fragment() {
-    private val log = "FoldersFragment"
     private var folders = ArrayList<Folder>()
 
     private lateinit var btnBack : ImageView
@@ -47,7 +45,6 @@ class FoldersFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d(log, "onCreateView: initialization FoldersFragment.")
         val view = inflater.inflate(R.layout.fragment_folders, container, false)
         store = FolderBaseHelper(context!!).writableDatabase
 
@@ -66,13 +63,14 @@ class FoldersFragment : Fragment() {
     private fun initUI() {
         folders.clear()
         val cursor = store.query(FolderSchema.FolderTable.NAME,
-            null, null, null, null, null, null)
+            null, null, null,
+            null, null, null)
         cursor.moveToFirst()
         while (!cursor.isAfterLast) {
             folders.add(Folder(
                 cursor.getInt(cursor.getColumnIndex("_id")),
-                cursor.getString(cursor.getColumnIndex("name_folder")),
-                cursor.getString(cursor.getColumnIndex("color_folder"))
+                cursor.getString(cursor.getColumnIndex(FolderSchema.FolderTable.Cols.NAME_FOLDER)),
+                cursor.getString(cursor.getColumnIndex(FolderSchema.FolderTable.Cols.COLOR_FOLDER))
             ))
             cursor.moveToNext()
         }
@@ -101,12 +99,12 @@ class FoldersFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onClickAddFolder(v: View) {
-        Log.d(log, "onClickAddFolder")
         val fragmentManager = activity?.supportFragmentManager
         val dialogAddFolder = AddFolderDialog()
 
-        dialogAddFolder.setCallback(object : AddFolderDialogListener {
-            override fun onClickPositive(dialog: DialogFragment, nameFolder: String) {
+        dialogAddFolder.setListener(object : PositiveDialogListener {
+            override fun onClickPositive(dialog: DialogFragment, position: Int, nameFolder: String,
+                                         colorFolder: String) {
                 val contentValues = ContentValues()
                 contentValues.put(FolderSchema.FolderTable.Cols.NAME_FOLDER,
                     if (nameFolder.isNotEmpty()) nameFolder else getString(R.string.default_name_folder))
@@ -121,7 +119,6 @@ class FoldersFragment : Fragment() {
     }
 
     private fun onLongClickFolder(position: Int) {
-        Log.d(log, "onLongClickFolder")
         val scrollPosition = recyclerView.layoutManager?.onSaveInstanceState()
         val fm = activity?.supportFragmentManager
         val bundle = Bundle()
@@ -130,10 +127,10 @@ class FoldersFragment : Fragment() {
 
         val bottomFolderDialog = BottomFolderDialog()
         bottomFolderDialog.arguments = bundle
-        bottomFolderDialog.setCallback(object : BottomFolderDialogListener {
+        bottomFolderDialog.setListener(object : BottomFolderDialogListener {
             override fun onClickDeleteFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogDeleteFolder = DeleteFolderDialog().newInstance(position)
-                dialogDeleteFolder.setCallback(object : PositiveDialogListener {
+                dialogDeleteFolder.setListener(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
                         val storeNotes = NoteBaseHelper(context!!).writableDatabase
@@ -155,7 +152,7 @@ class FoldersFragment : Fragment() {
 
             override fun onClickRenameFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogRenameFolder = RenameFolderDialog().newInstance(position, folders[position].name)
-                dialogRenameFolder.setCallback(object : PositiveDialogListener {
+                dialogRenameFolder.setListener(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
                         val contentValues = ContentValues()
@@ -175,7 +172,7 @@ class FoldersFragment : Fragment() {
 
             override fun onClickUpdateFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogUpdateColorFolder = UpdateColorFolderDialog().newInstance(position)
-                dialogUpdateColorFolder.setCallback(object : PositiveDialogListener {
+                dialogUpdateColorFolder.setListener(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
                         val contentValues = ContentValues()

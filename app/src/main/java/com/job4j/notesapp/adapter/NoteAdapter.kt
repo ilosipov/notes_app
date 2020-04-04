@@ -13,8 +13,7 @@ import com.job4j.notesapp.model.Note
  * Класс NoteAdapter - адаптер
  */
 
-class NoteAdapter(private var context: Context, private var resource: Int,
-                  private var notes: List<Note>) :
+class NoteAdapter(private var context: Context, private var resource: Int, private var notes: List<Note>) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     private lateinit var listener : OnClickItemListener
 
@@ -44,7 +43,7 @@ class NoteAdapter(private var context: Context, private var resource: Int,
         return notes.size
     }
 
-    fun setCallback(listener: OnClickItemListener) {
+    fun setListener(listener: OnClickItemListener) {
         this.listener = listener
     }
 }

@@ -19,8 +19,7 @@ import com.job4j.notesapp.model.Entry
  * @version $Id$
  */
 
-class EntryAdapter(private var context: Context, private var resource: Int,
-                   private var entrys: List<Entry>) :
+class EntryAdapter(private var context: Context, private var resource: Int, private var entrys: List<Entry>) :
     RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
     private lateinit var listener : EntryListener
 
@@ -32,7 +31,7 @@ class EntryAdapter(private var context: Context, private var resource: Int,
 
     override fun onBindViewHolder(holder: EntryViewHolder, position: Int) {
         val entry = entrys[position]
-        val itemView = holder.itemView
+        holder.itemView.setOnClickListener { listener.onClick(position) }
 
         val btnDelete = holder.itemView.findViewById<ImageView>(R.id.btn_delete_entry)
         val textEntry = holder.itemView.findViewById<TextView>(R.id.text_entry)
@@ -45,11 +44,10 @@ class EntryAdapter(private var context: Context, private var resource: Int,
             textEntry.text = entry.text
             btnDelete.visibility = View.VISIBLE
         }
-        itemView.setOnClickListener { listener.onClick(position) }
         btnDelete.setOnClickListener { listener.onClickDelete(position) }
     }
 
-    override fun getItemCount(): Int {
+    override fun getItemCount() : Int {
         return entrys.size
     }
 

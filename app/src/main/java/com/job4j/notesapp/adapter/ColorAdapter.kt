@@ -17,31 +17,29 @@ import com.job4j.notesapp.R
  * @version $Id$
  */
 
-class ColorAdapter(private var context: Context, private var resource: Int,
-                   private var colors: List<String>) :
+class ColorAdapter(private var context: Context, private var resource: Int, private var colors: List<String>) :
     RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
-    private lateinit var listener : ColorListener
+    private lateinit var listener : OnClickItemListener
 
     class ColorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ColorViewHolder {
         return ColorViewHolder(LayoutInflater.from(context).inflate(resource, parent, false))
     }
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
         val color = colors[position]
-        val itemView = holder.itemView
-        itemView.setOnClickListener { listener.onClick(position) }
+        holder.itemView.setOnClickListener { listener.onClick(position) }
 
         val imageColor = holder.itemView.findViewById<ImageView>(R.id.image_color)
         imageColor.setImageDrawable(ColorDrawable(Color.parseColor(color)))
     }
 
-    override fun getItemCount(): Int {
+    override fun getItemCount() : Int {
         return colors.size
     }
 
-    fun setListener(listener: ColorListener) {
+    fun setListener(listener: OnClickItemListener) {
         this.listener = listener
     }
 }

@@ -20,8 +20,7 @@ import com.job4j.notesapp.model.Folder
  * @version $Id$
  */
 
-class FolderAdapter(private var context: Context, private var resource: Int,
-                    private var folders: List<Folder>) :
+class FolderAdapter(private var context: Context, private var resource: Int, private var folders: List<Folder>) :
     RecyclerView.Adapter<FolderAdapter.FolderViewHolder>() {
     private lateinit var listener : OnClickItemListener
 
@@ -34,22 +33,20 @@ class FolderAdapter(private var context: Context, private var resource: Int,
     @SuppressLint("Range")
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
         val folder = folders[position]
-        val itemView = holder.itemView
+        holder.itemView.setOnClickListener { listener.onClick(position) }
+        holder.itemView.setOnLongClickListener {
+            listener.onLongClick(position)
+            return@setOnLongClickListener false
+        }
 
         val name = holder.itemView.findViewById<TextView>(R.id.name_folder)
         name.text = folder.name
 
         val colorFolder = holder.itemView.findViewById<ImageView>(R.id.color_folder)
         colorFolder.setImageDrawable(ColorDrawable(Color.parseColor(folder.colorFolder)))
-
-        itemView.setOnClickListener { listener.onClick(position) }
-        itemView.setOnLongClickListener {
-            listener.onLongClick(position)
-            return@setOnLongClickListener false
-        }
     }
 
-    override fun getItemCount(): Int {
+    override fun getItemCount() : Int {
         return folders.size
     }
 

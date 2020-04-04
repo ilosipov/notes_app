@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +27,6 @@ import java.util.*
  */
 
 class NoteFragment : Fragment() {
-    private val log = "NoteFragment"
-
     private lateinit var btnBack : ImageView
     private lateinit var editTitle : EditText
     private lateinit var editText : EditText
@@ -48,9 +45,6 @@ class NoteFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d(log, "onCreateView: " +
-                "id folder = ${arguments?.getInt("id_folder")}, " +
-                "id note = ${arguments?.getInt("id_note")}.")
         val view = inflater.inflate(R.layout.fragment_note, container, false)
         store = NoteBaseHelper(context!!).writableDatabase
 
@@ -94,7 +88,6 @@ class NoteFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(log, "onDestroy.")
         val contentValues = ContentValues()
         contentValues.put(NoteSchema.NoteTable.Cols.DATE, getDateFormat())
         contentValues.put(NoteSchema.NoteTable.Cols.TITLE, editTitle.text.toString().trim())

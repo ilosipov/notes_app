@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +26,6 @@ import com.job4j.notesapp.store.EntrySchema
  */
 
 class AddEntryFragment : Fragment() {
-    private val log = "AddEntryFragment"
-
     private lateinit var store : SQLiteDatabase
     private lateinit var imm : InputMethodManager
     private lateinit var btnPositive : ImageView
@@ -48,8 +45,6 @@ class AddEntryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add_entry, container, false)
-        Log.d(log, "onCreateView: initialization AddEntryFragment.")
-
         store = EntryBaseHelper(context!!).writableDatabase
 
         editText = view.findViewById(R.id.edit_text_entry)
@@ -73,7 +68,6 @@ class AddEntryFragment : Fragment() {
             imm.hideSoftInputFromWindow(editText.windowToken, 0)
             activity?.onBackPressed()
         }
-
         return view
     }
 

@@ -2,7 +2,6 @@ package com.job4j.notesapp.fargment
 
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,6 @@ import com.job4j.notesapp.store.NoteSchema
  */
 
 class NotesFragment : Fragment() {
-    private val log = "NotesFragment"
     private var notes = ArrayList<Note>()
 
     private lateinit var btnBack : ImageView
@@ -50,7 +48,6 @@ class NotesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d(log, "onCreateView: initialization NotesFragment.")
         val view = inflater.inflate(R.layout.fragment_notes, container, false)
         store = NoteBaseHelper(context!!).writableDatabase
 
@@ -81,10 +78,10 @@ class NotesFragment : Fragment() {
         while (!cursor.isAfterLast) {
             notes.add(Note(
                 cursor.getInt(cursor.getColumnIndex("_id")),
-                cursor.getString(cursor.getColumnIndex("date")),
-                cursor.getString(cursor.getColumnIndex("title")),
-                cursor.getString(cursor.getColumnIndex("body")),
-                cursor.getInt(cursor.getColumnIndex("folder_id"))
+                cursor.getString(cursor.getColumnIndex(NoteSchema.NoteTable.Cols.DATE)),
+                cursor.getString(cursor.getColumnIndex(NoteSchema.NoteTable.Cols.TITLE)),
+                cursor.getString(cursor.getColumnIndex(NoteSchema.NoteTable.Cols.BODY)),
+                cursor.getInt(cursor.getColumnIndex(NoteSchema.NoteTable.Cols.FOLDER_ID))
             ))
             cursor.moveToNext()
         }
@@ -98,9 +95,8 @@ class NotesFragment : Fragment() {
             emptyText.visibility = View.VISIBLE
         }
 
-        Log.d(log, "notes: $notes")
         adapter = activity?.let { NoteAdapter(it, R.layout.view_note, notes) }!!
-        adapter.setCallback(object : OnClickItemListener {
+        adapter.setListener(object : OnClickItemListener {
             override fun onClick(position: Int) {
                 activity?.supportFragmentManager
                     ?.beginTransaction()
@@ -122,7 +118,6 @@ class NotesFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onClickNewNote(v: View) {
-        Log.d(log, "onClickNewNote: click add new note.")
         activity?.supportFragmentManager
             ?.beginTransaction()
             ?.replace(R.id.fragment_container, NoteFragment()

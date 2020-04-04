@@ -2,7 +2,6 @@ package com.job4j.notesapp.dialog
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -37,7 +36,7 @@ class BottomFolderDialog : BottomSheetDialogFragment() {
         dialog.setContentView(view)
     }
 
-    fun setCallback(callback: BottomFolderDialogListener) {
-        this.listener = callback
+    fun setListener(listener: BottomFolderDialogListener) {
+        this.listener = listener
     }
 }

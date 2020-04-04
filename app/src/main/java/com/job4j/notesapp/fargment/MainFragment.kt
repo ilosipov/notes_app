@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +33,6 @@ import kotlin.collections.ArrayList
  */
 
 class MainFragment : Fragment() {
-    private val log = "MainFragment"
     private var calendar = Calendar.getInstance()
     private var entrys = ArrayList<Entry>()
 
@@ -54,7 +52,6 @@ class MainFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-        Log.d(log, "onCreateView: initialization MainFragment.")
         store = EntryBaseHelper(context!!).writableDatabase
 
         emptyText = view.findViewById(R.id.empty_text_main)
@@ -83,9 +80,9 @@ class MainFragment : Fragment() {
         while (!cursor.isAfterLast) {
             entrys.add(Entry(
                 cursor.getInt(cursor.getColumnIndex("_id")),
-                cursor.getString(cursor.getColumnIndex("date")),
-                cursor.getString(cursor.getColumnIndex("text")),
-                cursor.getInt(cursor.getColumnIndex("checked")) != 0
+                cursor.getString(cursor.getColumnIndex(EntrySchema.EntryTable.Cols.DATE)),
+                cursor.getString(cursor.getColumnIndex(EntrySchema.EntryTable.Cols.TEXT)),
+                cursor.getInt(cursor.getColumnIndex(EntrySchema.EntryTable.Cols.CHECKED)) != 0
             ))
             cursor.moveToNext()
         }

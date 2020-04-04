@@ -50,7 +50,7 @@ class DeleteFolderDialog : DialogFragment() {
         return alertDialogCreate as Dialog
     }
 
-    fun setCallback(callback: PositiveDialogListener) {
-        this.listener = callback
+    fun setListener(listener: PositiveDialogListener) {
+        this.listener = listener
     }
 }
