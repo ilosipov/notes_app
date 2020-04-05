@@ -2,6 +2,7 @@ package com.job4j.notesapp.fargment
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.text.InputType
@@ -12,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.R
 import com.job4j.notesapp.store.NoteBaseHelper
@@ -28,6 +30,8 @@ import java.util.*
 
 class NoteFragment : Fragment() {
     private lateinit var btnBack : ImageView
+    private lateinit var btnShare : ImageView
+    private lateinit var btnDelete : ImageView
     private lateinit var editTitle : EditText
     private lateinit var editText : EditText
     private lateinit var store : SQLiteDatabase
@@ -63,8 +67,38 @@ class NoteFragment : Fragment() {
             activity?.onBackPressed()
         }
 
+        btnShare = view.findViewById(R.id.btn_share_note)
+        btnDelete = view.findViewById(R.id.btn_delete_note)
+        if (arguments?.getInt("id_note") == 0) {
+            btnDelete.visibility = View.GONE
+            btnShare.visibility = View.GONE
+        } else {
+            btnDelete.visibility = View.VISIBLE
+            btnShare.visibility = View.VISIBLE
+            btnDelete.setOnClickListener(this::onClickDelete)
+            btnShare.setOnClickListener(this::onClickShare)
+        }
+
         initUI()
         return view
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onClickDelete(v: View) {
+        store.delete(NoteSchema.NoteTable.NAME, "_id = ?",
+            arrayOf( "${arguments!!.getInt("id_note")}" ))
+        activity?.onBackPressed()
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onClickShare(v: View) {
+        val shareIntent = ShareCompat.IntentBuilder
+            .from(activity!!)
+            .setType("text/plain").intent
+            .setAction(Intent.ACTION_SEND)
+            .putExtra(Intent.EXTRA_TEXT, "${editTitle.text}\n\n" +
+                    "${editText.text}")
+        startActivity(Intent.createChooser(shareIntent, "send note"))
     }
 
     private fun initUI() {

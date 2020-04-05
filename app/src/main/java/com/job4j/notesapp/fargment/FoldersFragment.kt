@@ -37,11 +37,11 @@ class FoldersFragment : Fragment() {
     private var folders = ArrayList<Folder>()
 
     private lateinit var btnBack : ImageView
-    private lateinit var recyclerView : RecyclerView
-    private lateinit var btnAddFolder : FloatingActionButton
+    private lateinit var emptyText : TextView
     private lateinit var store : SQLiteDatabase
     private lateinit var adapter : FolderAdapter
-    private lateinit var emptyText : TextView
+    private lateinit var recyclerView : RecyclerView
+    private lateinit var btnAddFolder : FloatingActionButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
