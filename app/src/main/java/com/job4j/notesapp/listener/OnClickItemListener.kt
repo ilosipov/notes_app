@@ -1,4 +1,4 @@
-package com.job4j.notesapp.adapter
+package com.job4j.notesapp.listener
 
 /**
  * Интерфейс FolderListener

@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.job4j.notesapp.R
+import com.job4j.notesapp.listener.EntryListener
 import com.job4j.notesapp.model.Entry
 
 /**

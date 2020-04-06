@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.ColorAdapter
-import com.job4j.notesapp.adapter.OnClickItemListener
+import com.job4j.notesapp.listener.OnClickItemListener
+import com.job4j.notesapp.listener.PositiveDialogListener
 
 /**
  * Класс UpdateColorFolderDialog - диалоговое окно для изменения цвета папки
@@ -48,7 +49,8 @@ class UpdateColorFolderDialog : DialogFragment() {
         recyclerView.layoutManager = GridLayoutManager(context, 6)
 
         val adapter = ColorAdapter(context!!, R.layout.view_color, colors)
-        adapter.setListener(object : OnClickItemListener {
+        adapter.setListener(object :
+            OnClickItemListener {
             override fun onClick(position: Int) {
                 listener.onClickPositive(this@UpdateColorFolderDialog,
                     arguments!!.getInt("position_folder"), "", colors[position])

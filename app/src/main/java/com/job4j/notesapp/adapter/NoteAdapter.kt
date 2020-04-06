@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.job4j.notesapp.R
+import com.job4j.notesapp.listener.OnClickItemListener
 import com.job4j.notesapp.model.Note
 
 /**

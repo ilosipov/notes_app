@@ -6,9 +6,10 @@ import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.job4j.notesapp.R
+import com.job4j.notesapp.listener.BottomFolderDialogListener
 
 /**
- * Класс BottomFolderDialog
+ * Класс BottomFolderDialog - нижний диалог для выбора действия с папкой
  * @author Ilya Osipov (mailto:il.osipov.gm@gmail.com)
  * @since 30.03.2020
  * @version $Id$

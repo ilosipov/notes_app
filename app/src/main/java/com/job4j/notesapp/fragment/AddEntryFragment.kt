@@ -1,4 +1,4 @@
-package com.job4j.notesapp.fargment
+package com.job4j.notesapp.fragment
 
 import android.content.ContentValues
 import android.content.Context

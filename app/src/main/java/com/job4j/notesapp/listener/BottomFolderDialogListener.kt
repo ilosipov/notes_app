@@ -1,4 +1,4 @@
-package com.job4j.notesapp.dialog
+package com.job4j.notesapp.listener
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

@@ -2,7 +2,7 @@ package com.job4j.notesapp.activity
 
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.BaseActivity
-import com.job4j.notesapp.fargment.NotesFragment
+import com.job4j.notesapp.fragment.NotesFragment
 
 /**
  * Класс NotesActivity - запускает NotesFragment

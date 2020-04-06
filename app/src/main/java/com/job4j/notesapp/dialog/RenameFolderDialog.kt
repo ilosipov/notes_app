@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.job4j.notesapp.R
+import com.job4j.notesapp.listener.PositiveDialogListener
 
 /**
  * Класс RenameFolderDialog - диалоговое окно для изменения имени папки

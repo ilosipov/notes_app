@@ -3,7 +3,10 @@ Notes App
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 ===============================================================================================================
 
-The application notebook.
+Application notebook. The app is very simple and convenient for making a list of things to do for the day.
+You can also create folders on topics and create a note with the information you need for yourself and
+share them.  
+All notes are stored only on your phone, and SQLite is used for storage.
 
 Screen
 ------

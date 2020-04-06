@@ -51,4 +51,10 @@
 <!--    Text NoteFragment -->
     <string name="hint_title_note">Title</string>
     <string name="hint_text_note">Text</string>
+
+<!--    Text DialogDeleteNote -->
+    <string name="title_delete_note_dialog">Remove note</string>
+    <string name="text_delete_note_dialog">The note will be permanently deleted</string>
+    <string name="btn_positive_delete_note" tools:ignore="ButtonCase,Typos">Ok</string>
+    <string name="btn_negative_delete_note">Cancel</string>
 </resources>

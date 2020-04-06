@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.job4j.notesapp.R
+import com.job4j.notesapp.listener.OnClickItemListener
 
 /**
  * Класс ColorAdapter - адаптер цветов для папки

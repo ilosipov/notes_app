@@ -1,4 +1,4 @@
-package com.job4j.notesapp.fargment
+package com.job4j.notesapp.fragment
 
 import android.content.ContentValues
 import android.content.Context
@@ -14,8 +14,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.app.ShareCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.R
+import com.job4j.notesapp.dialog.DeleteNoteDialog
+import com.job4j.notesapp.listener.PositiveDialogListener
 import com.job4j.notesapp.store.NoteBaseHelper
 import com.job4j.notesapp.store.NoteSchema
 import java.text.SimpleDateFormat
@@ -85,9 +88,16 @@ class NoteFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onClickDelete(v: View) {
-        store.delete(NoteSchema.NoteTable.NAME, "_id = ?",
-            arrayOf( "${arguments!!.getInt("id_note")}" ))
-        activity?.onBackPressed()
+        val dialogDeleteNote = DeleteNoteDialog().newInstance(arguments!!.getInt("id_note"))
+        dialogDeleteNote.setListener(object : PositiveDialogListener {
+            override fun onClickPositive(dialog: DialogFragment, position: Int,
+                                         nameFolder: String, colorFolder: String) {
+                store.delete(NoteSchema.NoteTable.NAME, "_id = ?", arrayOf( "$position" ))
+                activity?.onBackPressed()
+                dialog.dismiss()
+            }
+        })
+        activity?.supportFragmentManager?.let { dialogDeleteNote.show(it, "delete_note_dialog") }
     }
 
     @Suppress("UNUSED_PARAMETER")

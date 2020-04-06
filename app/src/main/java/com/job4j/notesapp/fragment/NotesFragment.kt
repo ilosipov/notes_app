@@ -1,4 +1,4 @@
-package com.job4j.notesapp.fargment
+package com.job4j.notesapp.fragment
 
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.NoteAdapter
-import com.job4j.notesapp.adapter.OnClickItemListener
+import com.job4j.notesapp.listener.OnClickItemListener
 import com.job4j.notesapp.model.Note
 import com.job4j.notesapp.store.NoteBaseHelper
 import com.job4j.notesapp.store.NoteSchema
@@ -96,7 +96,8 @@ class NotesFragment : Fragment() {
         }
 
         adapter = activity?.let { NoteAdapter(it, R.layout.view_note, notes) }!!
-        adapter.setListener(object : OnClickItemListener {
+        adapter.setListener(object :
+            OnClickItemListener {
             override fun onClick(position: Int) {
                 activity?.supportFragmentManager
                     ?.beginTransaction()

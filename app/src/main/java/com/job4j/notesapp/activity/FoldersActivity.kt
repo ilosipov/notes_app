@@ -2,7 +2,7 @@ package com.job4j.notesapp.activity
 
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.BaseActivity
-import com.job4j.notesapp.fargment.FoldersFragment
+import com.job4j.notesapp.fragment.FoldersFragment
 
 /**
  * Класс FoldersActivity - запускает FoldersFragment

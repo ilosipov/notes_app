@@ -1,4 +1,4 @@
-package com.job4j.notesapp.fargment
+package com.job4j.notesapp.fragment
 
 import android.content.ContentValues
 import android.content.Intent
@@ -16,7 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.activity.FoldersActivity
 import com.job4j.notesapp.adapter.EntryAdapter
-import com.job4j.notesapp.adapter.EntryListener
+import com.job4j.notesapp.listener.EntryListener
 import com.job4j.notesapp.adapter.SwipeToTransferCallback
 import com.job4j.notesapp.model.Entry
 import com.job4j.notesapp.store.EntryBaseHelper
