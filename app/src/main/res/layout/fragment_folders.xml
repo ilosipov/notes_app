@@ -39,7 +39,6 @@
             android:layout_marginBottom="4dp"
             android:text="@string/title_folders_fragment"
             android:textSize="24sp"
-            android:textStyle="bold"
             android:textColor="@color/colorTextDark"
             android:fontFamily="@font/roboto_medium"
             app:layout_constraintTop_toTopOf="parent"

@@ -84,7 +84,6 @@
         android:singleLine="false"
         android:textColor="@color/colorTextDark"
         android:textSize="22sp"
-        android:textStyle="bold"
         android:fontFamily="@font/roboto_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

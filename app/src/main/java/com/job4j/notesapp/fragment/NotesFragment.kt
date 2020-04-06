@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.NoteAdapter
+import com.job4j.notesapp.adapter.ScrollRecyclerListener
 import com.job4j.notesapp.dialog.BottomNoteDialog
 import com.job4j.notesapp.dialog.DeleteNoteDialog
 import com.job4j.notesapp.listener.BottomNoteDialogListener
@@ -117,6 +118,7 @@ class NotesFragment : Fragment() {
             }
         })
         recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.addOnScrollListener(ScrollRecyclerListener(btnNewNote))
         recyclerView.adapter = adapter
     }
 

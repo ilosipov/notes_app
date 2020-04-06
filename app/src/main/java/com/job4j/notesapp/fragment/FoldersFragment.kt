@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.activity.NotesActivity
 import com.job4j.notesapp.adapter.FolderAdapter
+import com.job4j.notesapp.adapter.ScrollRecyclerListener
 import com.job4j.notesapp.listener.OnClickItemListener
 import com.job4j.notesapp.dialog.*
 import com.job4j.notesapp.listener.BottomFolderDialogListener
@@ -97,6 +98,7 @@ class FoldersFragment : Fragment() {
             override fun onLongClick(position: Int) { onLongClickFolder(position) }
         })
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addOnScrollListener(ScrollRecyclerListener(btnAddFolder))
         recyclerView.adapter = adapter
     }
 
