@@ -27,6 +27,10 @@ class NoteAdapter(private var context: Context, private var resource: Int, priva
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
         holder.itemView.setOnClickListener { listener.onClick(position) }
+        holder.itemView.setOnLongClickListener {
+            listener.onLongClick(position)
+            return@setOnLongClickListener false
+        }
 
         val titleNote = holder.itemView.findViewById<TextView>(R.id.title_note)
         if (note.title.isEmpty()) {

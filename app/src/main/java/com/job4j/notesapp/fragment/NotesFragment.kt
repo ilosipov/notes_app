@@ -1,5 +1,6 @@
 package com.job4j.notesapp.fragment
 
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,13 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.ShareCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.job4j.notesapp.R
 import com.job4j.notesapp.adapter.NoteAdapter
+import com.job4j.notesapp.dialog.BottomNoteDialog
+import com.job4j.notesapp.dialog.DeleteNoteDialog
+import com.job4j.notesapp.listener.BottomNoteDialogListener
 import com.job4j.notesapp.listener.OnClickItemListener
+import com.job4j.notesapp.listener.PositiveDialogListener
 import com.job4j.notesapp.model.Note
 import com.job4j.notesapp.store.NoteBaseHelper
 import com.job4j.notesapp.store.NoteSchema
@@ -60,7 +68,8 @@ class NotesFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recycler_view_notes)
 
         btnNewNote = view.findViewById(R.id.btn_new_note)
-        btnNewNote.setOnClickListener(this::onClickNewNote)
+        btnNewNote.setOnClickListener { onClickNote(NoteFragment()
+            .newInstance(arguments!!.getInt("id_folder"), 0)) }
 
         initUI()
         return view
@@ -99,31 +108,64 @@ class NotesFragment : Fragment() {
         adapter.setListener(object :
             OnClickItemListener {
             override fun onClick(position: Int) {
-                activity?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.replace(R.id.fragment_container, NoteFragment().newInstance(
-                        arguments!!.getInt("id_folder"),
-                        notes[position].id
-                    ))
-                    ?.addToBackStack(null)
-                    ?.commit()
+                onClickNote(NoteFragment().newInstance(
+                    arguments!!.getInt("id_folder"), notes[position].id))
             }
 
             override fun onLongClick(position: Int) {
-                TODO("Not yet implemented")
+                onLongClickNote(position)
             }
         })
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.adapter = adapter
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun onClickNewNote(v: View) {
+    private fun onClickNote(fragment: Fragment) {
         activity?.supportFragmentManager
             ?.beginTransaction()
-            ?.replace(R.id.fragment_container, NoteFragment()
-                .newInstance(arguments!!.getInt("id_folder"), 0))
+            ?.replace(R.id.fragment_container, fragment)
             ?.addToBackStack(null)
             ?.commit()
+    }
+
+    private fun onLongClickNote(position: Int) {
+        val scrollPosition = recyclerView.layoutManager?.onSaveInstanceState()
+        val fm = activity?.supportFragmentManager
+        val bottomBundle = Bundle()
+        bottomBundle.putInt("id_note", position)
+
+        val bottomNoteDialog = BottomNoteDialog()
+        bottomNoteDialog.arguments = bottomBundle
+        bottomNoteDialog.setListener(object : BottomNoteDialogListener {
+            override fun onClickDeleteNote(position: Int, bottomDialog: BottomSheetDialogFragment) {
+                val dialogDeleteNote = DeleteNoteDialog().newInstance(position)
+                dialogDeleteNote.setListener(object : PositiveDialogListener {
+                    override fun onClickPositive(dialog: DialogFragment, position: Int,
+                                                 nameFolder: String, colorFolder: String) {
+                        store.delete(NoteSchema.NoteTable.NAME, "_id = ?",
+                            arrayOf( "${notes[position].id}" ))
+                        notes.remove(notes[position])
+                        adapter.notifyItemRemoved(position)
+                        recyclerView.adapter = adapter
+                        recyclerView.layoutManager?.onRestoreInstanceState(scrollPosition)
+                        dialog.dismiss()
+                    }
+                })
+                fm?.let { dialogDeleteNote.show(it, "delete_note_dialog") }
+                bottomNoteDialog.dismiss()
+            }
+
+            override fun onClickShareNote(position: Int, bottomDialog: BottomSheetDialogFragment) {
+                val shareIntent = ShareCompat.IntentBuilder
+                    .from(activity!!)
+                    .setType("text/plain").intent
+                    .setAction(Intent.ACTION_SEND)
+                    .putExtra(Intent.EXTRA_TEXT, notes[position].title + "\n\n" +
+                            notes[position].body)
+                startActivity(Intent.createChooser(shareIntent, "send note"))
+                bottomNoteDialog.dismiss()
+            }
+        })
+        fm?.let { bottomNoteDialog.show(it, "bottom_note_dialog") }
     }
 }

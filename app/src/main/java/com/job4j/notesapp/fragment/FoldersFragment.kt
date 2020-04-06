@@ -131,12 +131,10 @@ class FoldersFragment : Fragment() {
 
         val bottomFolderDialog = BottomFolderDialog()
         bottomFolderDialog.arguments = bundle
-        bottomFolderDialog.setListener(object :
-            BottomFolderDialogListener {
+        bottomFolderDialog.setListener(object : BottomFolderDialogListener {
             override fun onClickDeleteFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogDeleteFolder = DeleteFolderDialog().newInstance(position)
-                dialogDeleteFolder.setListener(object :
-                    PositiveDialogListener {
+                dialogDeleteFolder.setListener(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
                         val storeNotes = NoteBaseHelper(context!!).writableDatabase
@@ -158,8 +156,7 @@ class FoldersFragment : Fragment() {
 
             override fun onClickRenameFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogRenameFolder = RenameFolderDialog().newInstance(position, folders[position].name)
-                dialogRenameFolder.setListener(object :
-                    PositiveDialogListener {
+                dialogRenameFolder.setListener(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
                         val contentValues = ContentValues()
@@ -179,8 +176,7 @@ class FoldersFragment : Fragment() {
 
             override fun onClickUpdateFolder(position: Int, bottomDialog: BottomSheetDialogFragment) {
                 val dialogUpdateColorFolder = UpdateColorFolderDialog().newInstance(position)
-                dialogUpdateColorFolder.setListener(object :
-                    PositiveDialogListener {
+                dialogUpdateColorFolder.setListener(object : PositiveDialogListener {
                     override fun onClickPositive(dialog: DialogFragment, position: Int,
                                                  nameFolder: String, colorFolder: String) {
                         val contentValues = ContentValues()
