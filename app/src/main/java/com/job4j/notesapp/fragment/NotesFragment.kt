@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ShareCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -38,12 +41,17 @@ class NotesFragment : Fragment() {
     private var notes = ArrayList<Note>()
 
     private lateinit var btnBack : ImageView
+    private lateinit var emptyText : TextView
     private lateinit var titleFragment : TextView
-    private lateinit var recyclerView : RecyclerView
-    private lateinit var btnNewNote : FloatingActionButton
     private lateinit var adapter : NoteAdapter
     private lateinit var store : SQLiteDatabase
-    private lateinit var emptyText : TextView
+    private lateinit var recyclerView : RecyclerView
+    private lateinit var titleLayout : ConstraintLayout
+    private lateinit var btnNewNote : FloatingActionButton
+
+    private lateinit var animRight : Animation
+    private lateinit var animBottom : Animation
+    private lateinit var animCenter : Animation
 
     fun newInstance(id: Int, name: String) : Fragment {
         val bundle = Bundle()
@@ -60,17 +68,26 @@ class NotesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_notes, container, false)
         store = NoteBaseHelper(context!!).writableDatabase
 
+        animRight = AnimationUtils.loadAnimation(context, R.anim.anim_right)
+        animBottom = AnimationUtils.loadAnimation(context, R.anim.anim_bottom)
+        animCenter = AnimationUtils.loadAnimation(context, R.anim.anim_center)
+
         emptyText = view.findViewById(R.id.empty_text_notes)
+        titleLayout = view.findViewById(R.id.title_notes_layout)
+        recyclerView = view.findViewById(R.id.recycler_view_notes)
         titleFragment = view.findViewById(R.id.title_notes_fragment)
         titleFragment.text = arguments!!.getString("name_folder")
         btnBack = view.findViewById(R.id.btn_back_notes)
         btnBack.setOnClickListener { activity!!.onBackPressed() }
 
-        recyclerView = view.findViewById(R.id.recycler_view_notes)
-
         btnNewNote = view.findViewById(R.id.btn_new_note)
         btnNewNote.setOnClickListener { onClickNote(NoteFragment()
             .newInstance(arguments!!.getInt("id_folder"), 0)) }
+
+        emptyText.startAnimation(animCenter)
+        titleLayout.startAnimation(animRight)
+        btnNewNote.startAnimation(animBottom)
+        recyclerView.startAnimation(animBottom)
 
         initUI()
         return view

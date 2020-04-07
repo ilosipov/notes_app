@@ -9,10 +9,13 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ShareCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -35,10 +38,13 @@ class NoteFragment : Fragment() {
     private lateinit var btnBack : ImageView
     private lateinit var btnShare : ImageView
     private lateinit var btnDelete : ImageView
-    private lateinit var editTitle : EditText
     private lateinit var editText : EditText
+    private lateinit var editTitle : EditText
     private lateinit var store : SQLiteDatabase
     private lateinit var imm : InputMethodManager
+    private lateinit var titleLayout : ConstraintLayout
+
+    private lateinit var animRight : Animation
 
     fun newInstance(idFolder: Int, idNote: Int) : Fragment {
         val bundle = Bundle()
@@ -55,12 +61,15 @@ class NoteFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_note, container, false)
         store = NoteBaseHelper(context!!).writableDatabase
 
+        animRight = AnimationUtils.loadAnimation(context, R.anim.anim_right)
+
         editTitle = view.findViewById(R.id.edit_title_note)
         editTitle.imeOptions = EditorInfo.IME_ACTION_NEXT
         editTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
         editTitle.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 
         editText = view.findViewById(R.id.edit_body_note)
+        titleLayout = view.findViewById(R.id.title_note_layout)
 
         btnBack = view.findViewById(R.id.btn_back_note)
         btnBack.setOnClickListener {
@@ -81,6 +90,10 @@ class NoteFragment : Fragment() {
             btnDelete.setOnClickListener(this::onClickDelete)
             btnShare.setOnClickListener(this::onClickShare)
         }
+
+        editText.startAnimation(animRight)
+        editTitle.startAnimation(animRight)
+        titleLayout.startAnimation(animRight)
 
         initUI()
         return view

@@ -8,11 +8,14 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.job4j.notesapp.R
 import com.job4j.notesapp.store.EntryBaseHelper
@@ -32,6 +35,8 @@ class AddEntryFragment : Fragment() {
     private lateinit var btnNegative : ImageView
     private lateinit var dateEntry : TextView
     private lateinit var editText : EditText
+    private lateinit var animTop : Animation
+    private lateinit var cardDate : CardView
 
     fun newInstance(date: String) : Fragment {
         val bundle = Bundle()
@@ -47,6 +52,10 @@ class AddEntryFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add_entry, container, false)
         store = EntryBaseHelper(context!!).writableDatabase
 
+        animTop = AnimationUtils.loadAnimation(context, R.anim.anim_top)
+        cardDate = view.findViewById(R.id.card_view_date_add)
+        cardDate.startAnimation(animTop)
+
         editText = view.findViewById(R.id.edit_text_entry)
         editText.imeOptions = EditorInfo.IME_ACTION_DONE
         editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
@@ -56,6 +65,7 @@ class AddEntryFragment : Fragment() {
             if (actionId == EditorInfo.IME_ACTION_DONE) { saveData() }
             true
         }
+        editText.startAnimation(animTop)
 
         dateEntry = view.findViewById(R.id.text_date_add)
         dateEntry.text = arguments?.get("date_entry").toString()

@@ -7,8 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,13 +47,23 @@ class FoldersFragment : Fragment() {
     private lateinit var store : SQLiteDatabase
     private lateinit var adapter : FolderAdapter
     private lateinit var recyclerView : RecyclerView
+    private lateinit var titleLayout : ConstraintLayout
     private lateinit var btnAddFolder : FloatingActionButton
+
+    private lateinit var animRight : Animation
+    private lateinit var animBottom : Animation
+    private lateinit var animCenter : Animation
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_folders, container, false)
         store = FolderBaseHelper(context!!).writableDatabase
 
+        animRight = AnimationUtils.loadAnimation(context, R.anim.anim_right)
+        animBottom = AnimationUtils.loadAnimation(context, R.anim.anim_bottom)
+        animCenter = AnimationUtils.loadAnimation(context, R.anim.anim_center)
+
+        titleLayout = view.findViewById(R.id.title_folders_layout)
         emptyText = view.findViewById(R.id.empty_text_folder)
         btnBack = view.findViewById(R.id.btn_back_folders)
         btnBack.setOnClickListener { activity!!.onBackPressed() }
@@ -58,6 +71,11 @@ class FoldersFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recycler_view_folders)
         btnAddFolder = view.findViewById(R.id.btn_add_folder)
         btnAddFolder.setOnClickListener(this::onClickAddFolder)
+
+        emptyText.startAnimation(animCenter)
+        titleLayout.startAnimation(animRight)
+        recyclerView.startAnimation(animBottom)
+        btnAddFolder.startAnimation(animBottom)
 
         initUI()
         return view

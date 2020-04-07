@@ -5,8 +5,11 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,13 +39,18 @@ class MainFragment : Fragment() {
     private var calendar = Calendar.getInstance()
     private var entrys = ArrayList<Entry>()
 
-    private lateinit var store : SQLiteDatabase
-    private lateinit var adapter: EntryAdapter
     private lateinit var dateMain : TextView
+    private lateinit var emptyText : TextView
+    private lateinit var adapter: EntryAdapter
+    private lateinit var store : SQLiteDatabase
+    private lateinit var cardViewDate : CardView
     private lateinit var barBottom : BottomAppBar
     private lateinit var recyclerView : RecyclerView
     private lateinit var btnAdd : FloatingActionButton
-    private lateinit var emptyText : TextView
+
+    private lateinit var animTop : Animation
+    private lateinit var animBottom : Animation
+    private lateinit var animCenter : Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,16 +62,28 @@ class MainFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
         store = EntryBaseHelper(context!!).writableDatabase
 
+        animTop = AnimationUtils.loadAnimation(context, R.anim.anim_top)
+        animBottom = AnimationUtils.loadAnimation(context, R.anim.anim_bottom)
+        animCenter = AnimationUtils.loadAnimation(context, R.anim.anim_center)
+
         emptyText = view.findViewById(R.id.empty_text_main)
+        cardViewDate = view.findViewById(R.id.card_view_date)
+        recyclerView = view.findViewById(R.id.recycler_view_main)
+
         dateMain = view.findViewById(R.id.text_date)
         dateMain.text = setDateFormat(calendar.time)
 
-        recyclerView = view.findViewById(R.id.recycler_view_main)
         barBottom = view.findViewById(R.id.bottom_bar)
         (requireActivity() as AppCompatActivity).setSupportActionBar(barBottom)
 
         btnAdd = view.findViewById(R.id.btn_add)
         btnAdd.setOnClickListener(this::onClickAdd)
+
+        btnAdd.startAnimation(animBottom)
+        barBottom.startAnimation(animBottom)
+        recyclerView.startAnimation(animTop)
+        cardViewDate.startAnimation(animTop)
+        emptyText.startAnimation(animCenter)
 
         updateUI(dateMain.text.toString())
         return view
