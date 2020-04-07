@@ -11,8 +11,8 @@ All notes are stored only on your phone, and SQLite is used for storage.
 Screen
 ------
 ![sample](./image/screen_notes_app_first.png)  
-![sample](./image/screen_notes_app_second.png)  
-![sample](./image/screen_notes_app_third.png)
+![sample](./image/screen_notes_app_third.png)  
+![sample](./image/screen_notes_app_second.png)
 
 Contact
 -------
